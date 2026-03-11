@@ -42,9 +42,10 @@ export default function App() {
 const styles = StyleSheet.create({
 
   container: {
-    backgroundColor: "black",
-    padding: 20,
-  },
+  backgroundColor: "black",
+  padding: 20,
+  paddingTop: 60,
+},
 
   title: {
     color: "white",
