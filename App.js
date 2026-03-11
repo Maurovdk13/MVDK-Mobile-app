@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   View,
@@ -6,15 +6,11 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  Button,
-  Switch,
 } from "react-native";
 
 import ProductCard from "./components/ProductCard";
 
 export default function App() {
-
-  const [isEnabled, setIsEnabled] = useState(false);
 
   return (
     <ScrollView style={styles.container}>
@@ -25,17 +21,6 @@ export default function App() {
         placeholder="Zoek tent..."
         style={styles.search}
       />
-
-      <View style={styles.switchContainer}>
-        <Text style={{ color: "white" }}>Donkere modus</Text>
-
-        <Switch
-          value={isEnabled}
-          onValueChange={() => setIsEnabled(!isEnabled)}
-        />
-      </View>
-
-      <Button title="Bekijk tenten" />
 
       <View style={styles.grid}>
 
@@ -73,13 +58,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 8,
-    marginBottom: 15,
-  },
-
-  switchContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
+    marginBottom: 20,
   },
 
   grid: {
