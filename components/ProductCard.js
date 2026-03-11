@@ -6,18 +6,18 @@ export default function ProductCard() {
     <View style={styles.card}>
       <Image
         source={{
-          uri: "https://powersports.honda.com/-/media/products/family/cbr650r/gallery/my25/cbr650r-gallery-1-750x750.jpg",
+          uri: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4",
         }}
         style={styles.image}
       />
 
-      <Text style={styles.title}>Honda CBR650R</Text>
+      <Text style={styles.title}>Mountain Camping Tent</Text>
 
       <Text style={styles.description}>
-        Pure viercilinderprestaties
+        Lichtgewicht 2-persoons tent voor outdoor avonturen
       </Text>
 
-      <Text style={styles.price}>€8999</Text>
+      <Text style={styles.price}>€129</Text>
 
       <Pressable style={styles.button}>
         <Text style={styles.buttonText}>Bekijk product</Text>
@@ -53,13 +53,13 @@ const styles = StyleSheet.create({
   },
 
   price: {
-    color: "red",
+    color: "green",
     fontWeight: "bold",
     marginBottom: 10,
   },
 
   button: {
-    backgroundColor: "red",
+    backgroundColor: "#2E8B57",
     padding: 10,
     borderRadius: 8,
   },
