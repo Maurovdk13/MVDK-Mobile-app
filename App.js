@@ -19,15 +19,15 @@ export default function App() {
   return (
     <ScrollView style={styles.container}>
 
-      <Text style={styles.title}>Onze modellen</Text>
+      <Text style={styles.title}>Onze Tenten</Text>
 
       <TextInput
-        placeholder="Zoek motor..."
+        placeholder="Zoek tent..."
         style={styles.search}
       />
 
       <View style={styles.switchContainer}>
-        <Text style={{color:"white"}}>Donkere modus</Text>
+        <Text style={{ color: "white" }}>Donkere modus</Text>
 
         <Switch
           value={isEnabled}
@@ -35,7 +35,7 @@ export default function App() {
         />
       </View>
 
-      <Button title="Filter producten" />
+      <Button title="Bekijk tenten" />
 
       <View style={styles.grid}>
 
