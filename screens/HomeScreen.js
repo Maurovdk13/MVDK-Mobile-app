@@ -21,21 +21,22 @@ const HomeScreen = () => {
       />
 
       <View style={styles.grid}>
-        <ProductCard
-          title="Mountain Tent"
-          description="Dit comfortabele Mountain Tent is perfect voor je buitenavonturen."
-          price="€299"
-          image={require("../assets/tent.jpg")}
-        />
-      </View>
-      <View style={styles.grid}>
-        <ProductCard
-          title="Alpine Explorer Tent"
-          description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
-          price="€349"
-          image={require("../assets/tent.avif")}
-        />
-      </View>
+
+  <ProductCard
+    title="Mountain Tent"
+    description="Dit comfortabele Mountain Tent is perfect voor je buitenavonturen."
+    price="€299"
+    image={require("../assets/tent.jpg")}
+  />
+
+  <ProductCard
+    title="Alpine Explorer Tent"
+    description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
+    price="€349"
+    image={require("../assets/tent.avif")}
+  />
+
+</View>
 
     </ScrollView>
   );
