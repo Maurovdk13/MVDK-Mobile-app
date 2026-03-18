@@ -2,29 +2,32 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ProductCard() {
+export default function ProductCard({ product }) {
   const navigation = useNavigation();
 
   return (
     <View style={styles.card}>
+
       <Image
-        source={{
-          uri: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4",
-        }}
+        source={{ uri: product.image }}
         style={styles.image}
       />
 
-      <Text style={styles.title}>Mountain Camping Tent</Text>
+      <Text style={styles.title}>{product.title}</Text>
 
       <Text style={styles.description}>
-        Lichtgewicht 2-persoons tent voor outdoor avonturen
+        {product.description}
       </Text>
 
-      <Text style={styles.price}>€129</Text>
-      
-      <Pressable style={styles.button} onPress={() => navigation.navigate("Details")}>
+      <Text style={styles.price}>{product.price}</Text>
+
+      <Pressable
+        style={styles.button}
+        onPress={() => navigation.navigate("Details", { product })}
+      >
         <Text style={styles.buttonText}>Bekijk product</Text>
       </Pressable>
+
     </View>
   );
 }
