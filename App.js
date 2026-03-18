@@ -1,71 +1,25 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-} from "react-native";
+import {} from "react-native";
 
 import ProductCard from "./components/ProductCard";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const tack = createNativeStackNavigator();
+
+import HomeScreen from "./screens/HomeScreen";
+import ProductDetail from "./screens/ProductDetail";
 
 export default function App() {
 
   return (
-    <ScrollView style={styles.container}>
+    <NavigationContainer>
+      <tack.Navigator>
+        <tack.Screen name="Home" component={HomeScreen} />
+        <tack.Screen name="Details" component={ProductDetail}/>
+      </tack.Navigator>
+      </NavigationContainer>
 
-      <Text style={styles.title}>Onze Tenten</Text>
-
-      <TextInput
-        placeholder="Zoek tent..."
-        style={styles.search}
-      />
-
-      <View style={styles.grid}>
-
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-
-      </View>
-
-      <StatusBar style="auto" />
-
-    </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-
-  container: {
-  backgroundColor: "black",
-  padding: 20,
-  paddingTop: 60,
-},
-
-  title: {
-    color: "white",
-    fontSize: 28,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-
-  search: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-
-  grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-
-});
