@@ -22,6 +22,16 @@ const decreaseQuantity = () => {
       <Text style={styles.description}>{description}</Text>
 
       <Text style={styles.price}>{price}</Text>
+      <touchableOpacity onPress={decreaseQuantity} style={styles.button}>
+        <Text style={styles.buttonText}>-</Text>
+      </touchableOpacity>
+
+        <Text style={styles.quantityText}>{quantity}</Text>
+
+        <touchableOpacity onPress={increaseQuantity} style={styles.button}>
+          <Text style={styles.buttonText}>+</Text>
+        </touchableOpacity>
+
     </View>
   );
 };
