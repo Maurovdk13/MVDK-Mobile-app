@@ -21,11 +21,24 @@ const HomeScreen = () => {
       />
 
       <View style={styles.grid}>
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
-        <ProductCard />
+        <ProductCard
+          title="Mountain Tent"
+          price="299"
+          image="./assets/tent.jpg"
+          onPress={() =>
+            navigation.navigate("Details", {
+              title: "Mountain Tent",
+              price: "299",
+              image:
+                "./assets/tent.jpg",
+              description:
+                "Dit comfortabele Mountain Tent is perfect voor je buitenavonturen. Het sterke materiaal zorgt voor maximale bescherming tegen het weer.",
+              category: "Tents",
+            })
+          }
+        />
       </View>
+
 
     </ScrollView>
   );
