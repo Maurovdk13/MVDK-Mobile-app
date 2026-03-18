@@ -36,7 +36,7 @@ const HomeScreen = () => {
           title="Alpine Explorer Tent"
           description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
           price="€349"
-          image={require("../assets/tent.jpg")}
+          image={require("../assets/tent.avif")}
         />
       </View>
 
@@ -47,13 +47,13 @@ const HomeScreen = () => {
         <BlogCard
           title="5 tips voor kamperen"
           description="Leer hoe je beter kan kamperen."
-          image={require("../assets/tent.jpg")}
+          image={require("../assets/blog1.jpg")}
         />
 
         <BlogCard
           title="Beste tenten van 2025"
           description="Onze top keuzes."
-          image={require("../assets/tent.jpg")}
+          image={require("../assets/blog2.jpeg")}
         />
       </View>
 
