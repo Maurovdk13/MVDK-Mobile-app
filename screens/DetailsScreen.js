@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 
-const ProductDetail = ({ route }) => {
-  const { title, description, price, image } = route.params;
+const DetailsScreen = ({ route }) => {
+  const { title, description, price, image, type } = route.params || {};
 
   const [quantity, setQuantity] = useState(1);
 
@@ -23,26 +23,34 @@ const ProductDetail = ({ route }) => {
   return (
     <View style={styles.container}>
 
-      {/* ✅ IMAGE FIX */}
       <Image source={image} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
       <Text style={styles.description}>{description}</Text>
 
-      <Text style={styles.price}>{price}</Text>
+      {/* Alleen voor product */}
+      {type === "product" && (
+        <>
+          <Text style={styles.price}>{price}</Text>
 
-      <View style={styles.quantityContainer}>
-        <TouchableOpacity onPress={decreaseQuantity} style={styles.button}>
-          <Text style={styles.buttonText}>-</Text>
-        </TouchableOpacity>
+          <View style={styles.quantityContainer}>
+            <TouchableOpacity onPress={decreaseQuantity} style={styles.button}>
+              <Text style={styles.buttonText}>-</Text>
+            </TouchableOpacity>
 
-        <Text style={styles.quantityText}>{quantity}</Text>
+            <Text style={styles.quantityText}>{quantity}</Text>
 
-        <TouchableOpacity onPress={increaseQuantity} style={styles.button}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity onPress={increaseQuantity} style={styles.button}>
+              <Text style={styles.buttonText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
+
+      <Text style={styles.type}>
+        {type === "product" ? "Product" : "Blog artikel"}
+      </Text>
 
     </View>
   );
@@ -104,6 +112,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+
+  type: {
+    marginTop: 20,
+    color: "gray",
+  },
 });
 
-export default ProductDetail;
+export default DetailsScreen;

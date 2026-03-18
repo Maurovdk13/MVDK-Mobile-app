@@ -6,31 +6,35 @@ export default function ProductCard({ title, description, price, image }) {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.card}>
-
+    <Pressable
+      style={styles.card}
+      onPress={() =>
+        navigation.navigate("Details", {
+          title,
+          description,
+          price,
+          image,
+          type: "product",
+        })
+      }
+    >
       <Image source={image} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
-      <Text style={styles.description}>{description}</Text>
+      {/* 👇 voorkomt errors als iets ontbreekt */}
+      {description && (
+        <Text style={styles.description}>{description}</Text>
+      )}
 
-      <Text style={styles.price}>{price}</Text>
+      {price && (
+        <Text style={styles.price}>{price}</Text>
+      )}
 
-      <Pressable
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate("Details", {
-            title,
-            description,
-            price,
-            image,
-          })
-        }
-      >
+      <View style={styles.button}>
         <Text style={styles.buttonText}>Bekijk product</Text>
-      </Pressable>
-
-    </View>
+      </View>
+    </Pressable>
   );
 }
 
@@ -41,6 +45,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: "48%",
     marginBottom: 20,
+
+    // 👇 mooi design (extra punten)
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 5,
   },
 
   image: {
