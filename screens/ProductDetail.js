@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
 const ProductDetail = ({ route }) => {
