@@ -41,6 +41,20 @@ const HomeScreen = () => {
       image: "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9",
       description: "Voor echte avonturiers",
     },
+    {
+      id: 5,
+      title: "Ultra Light Tent",
+      price: "€159",
+      image: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d",
+      description: "Super licht en compact",
+    },
+    {
+      id: 6,
+      title: "Explorer Tent",
+      price: "€179",
+      image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
+      description: "Perfect voor lange reizen",
+    },
   ];
 
   return (
@@ -63,7 +77,7 @@ const HomeScreen = () => {
 
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
