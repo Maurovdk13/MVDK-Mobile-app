@@ -22,7 +22,7 @@ export default function ProductCard() {
 
       <Text style={styles.price}>€129</Text>
       
-      <Pressable style={styles.button} onPress={() => navigation.navigate("Details")}>n
+      <Pressable style={styles.button} onPress={() => navigation.navigate("Details")}>
         <Text style={styles.buttonText}>Bekijk product</Text>
       </Pressable>
     </View>
