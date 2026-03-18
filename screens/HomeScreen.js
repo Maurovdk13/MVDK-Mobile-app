@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import {
   View,
   Text,
@@ -11,17 +10,16 @@ import {
 } from "react-native";
 
 import ProductCard from "../components/ProductCard";
-const HomeScreen = () => {
 
+const HomeScreen = () => {
   const [isEnabled, setIsEnabled] = useState(false);
 
   return (
     <ScrollView style={styles.container}>
-
       <Text style={styles.title}>Onze modellen</Text>
 
       <TextInput
-        placeholder="Zoek motor..."
+        placeholder="Zoek product..."
         style={styles.search}
       />
 
@@ -37,38 +35,16 @@ const HomeScreen = () => {
       <Button title="Filter producten" />
 
       <View style={styles.grid}>
-
-        <ProductCard 
-        title="Smart ring"
-        description="Slimme ring voor gezondheid en tracking"
-        price= "$299"
-        image={require("../assets/ring.png")}
-        onPress={()=>
-            Navigation.navigate("Details", {
-                title: "Smart ring",
-                description: "Slimme ring voor gezondheid en tracking",
-                price: "$299",
-                image: require("../assets/ring.png"),
-            })
-        }
-        
-        />
         <ProductCard />
         <ProductCard />
         <ProductCard />
         <ProductCard />
-        <ProductCard />
-
       </View>
-
-      <StatusBar style="auto" />
-
     </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
-
   container: {
     backgroundColor: "black",
     padding: 20,
@@ -100,7 +76,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
   },
-
 });
 
 export default HomeScreen;

@@ -1,17 +1,18 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 
-export default function ProductCard({title, description, price, image, onPress}) {
+export default function ProductCard() {
   const navigation = useNavigation();
+
   return (
     <View style={styles.card}>
       <Image
-        source={require("../assets/ring.png")}
+        source={require("../assets/tent.jpg")}
         style={styles.image}
       />
 
-      <Text style={styles.title}>Smart Ring</Text>
+      <Text style={styles.title}>Tent</Text>
 
       <Text style={styles.description}>
         Slimme ring voor gezondheid en tracking
@@ -19,7 +20,17 @@ export default function ProductCard({title, description, price, image, onPress})
 
       <Text style={styles.price}>€299</Text>
 
-      <Pressable style={styles.button} onPress={() => navigation.navigate("Details")}>
+      <Pressable
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate("Details", {
+            title: "Smart Ring",
+            description: "Slimme ring voor gezondheid en tracking",
+            price: "€299",
+            image: require("../assets/tent.jpg"),
+          })
+        }
+      >
         <Text style={styles.buttonText}>Bekijk product</Text>
       </Pressable>
     </View>
