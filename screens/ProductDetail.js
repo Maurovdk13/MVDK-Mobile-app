@@ -23,7 +23,8 @@ const ProductDetail = ({ route }) => {
   return (
     <View style={styles.container}>
 
-      <Image source={{ url: image }} style={styles.image} />
+      {/* ✅ IMAGE FIX */}
+      <Image source={{ uri: image }} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
@@ -53,12 +54,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
     alignItems: "center",
+    justifyContent: "center",
   },
 
   image: {
     width: 250,
     height: 250,
     marginBottom: 20,
+    borderRadius: 10,
   },
 
   title: {

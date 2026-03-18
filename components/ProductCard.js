@@ -2,37 +2,34 @@ import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ProductCard() {
+export default function ProductCard({ title, description, price, image }) {
   const navigation = useNavigation();
 
   return (
     <View style={styles.card}>
-      <Image
-        source={require("../assets/tent.jpg")}
-        style={styles.image}
-      />
 
-      <Text style={styles.title}>Mountain Tent</Text>
+      <Image source={image} style={styles.image} />
 
-      <Text style={styles.description}>
-        Lichtgewicht 2-persoons tent, ideaal voor bergtochten en avontuurlijke trips.
-      </Text>
+      <Text style={styles.title}>{title}</Text>
 
-      <Text style={styles.price}>€299</Text>
+      <Text style={styles.description}>{description}</Text>
+
+      <Text style={styles.price}>{price}</Text>
 
       <Pressable
         style={styles.button}
         onPress={() =>
           navigation.navigate("Details", {
-            title: "Mountain Tent",
-            description: "Lichtgewicht 2-persoons tent, ideaal voor bergtochten en avontuurlijke trips.",
-            price: "€299",
-            image: require("../assets/tent.jpg"),
+            title,
+            description,
+            price,
+            image,
           })
         }
       >
         <Text style={styles.buttonText}>Bekijk product</Text>
       </Pressable>
+
     </View>
   );
 }
