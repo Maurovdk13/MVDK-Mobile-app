@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   View,
@@ -6,84 +6,72 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
+  Button,
+  Switch,
 } from "react-native";
 
 import ProductCard from "../components/ProductCard";
-
 const HomeScreen = () => {
 
-  const products = [
-    {
-      id: 1,
-      title: "Mountain Tent",
-      price: "€129",
-      image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4",
-      description: "Lichtgewicht 2-persoons tent",
-    },
-    {
-      id: 2,
-      title: "Family Tent",
-      price: "€199",
-      image: "https://images.unsplash.com/photo-1526779259212-756e4c1d2b5d",
-      description: "Ruime tent voor gezinnen",
-    },
-    {
-      id: 3,
-      title: "Compact Tent",
-      price: "€89",
-      image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-      description: "Ideaal voor korte trips",
-    },
-    {
-      id: 4,
-      title: "Pro Camping Tent",
-      price: "€249",
-      image: "https://images.unsplash.com/photo-1499696010180-025ef6e1a8f9",
-      description: "Voor echte avonturiers",
-    },
-    {
-      id: 5,
-      title: "Ultra Light Tent",
-      price: "€159",
-      image: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d",
-      description: "Super licht en compact",
-    },
-    {
-      id: 6,
-      title: "Explorer Tent",
-      price: "€179",
-      image: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429",
-      description: "Perfect voor lange reizen",
-    },
-  ];
+  const [isEnabled, setIsEnabled] = useState(false);
 
   return (
     <ScrollView style={styles.container}>
 
-      <Text style={styles.title}>Onze Tenten</Text>
+      <Text style={styles.title}>Onze modellen</Text>
 
       <TextInput
-        placeholder="Zoek tent..."
+        placeholder="Zoek motor..."
         style={styles.search}
       />
 
+      <View style={styles.switchContainer}>
+        <Text style={{ color: "white" }}>Donkere modus</Text>
+
+        <Switch
+          value={isEnabled}
+          onValueChange={() => setIsEnabled(!isEnabled)}
+        />
+      </View>
+
+      <Button title="Filter producten" />
+
       <View style={styles.grid}>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+
+        <ProductCard 
+        title="Smart ring"
+        description="Slimme ring voor gezondheid en tracking"
+        price= "$299"
+        image={require("../assets/ring.png")}
+        onPress={()=>
+            Navigation.navigate("Details", {
+                title: "Smart ring",
+                description: "Slimme ring voor gezondheid en tracking",
+                price: "$299",
+                image: require("../assets/ring.png"),
+            })
+        }
+        
+        />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+        <ProductCard />
+
       </View>
 
       <StatusBar style="auto" />
 
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
+
   container: {
     backgroundColor: "black",
     padding: 20,
-    paddingTop: 60,
   },
 
   title: {
@@ -98,7 +86,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     borderRadius: 8,
-    marginBottom: 20,
+    marginBottom: 15,
+  },
+
+  switchContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
   },
 
   grid: {
@@ -106,6 +100,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
   },
+
 });
 
 export default HomeScreen;
