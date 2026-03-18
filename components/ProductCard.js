@@ -12,10 +12,10 @@ export default function ProductCard() {
         style={styles.image}
       />
 
-      <Text style={styles.title}>Tent</Text>
+      <Text style={styles.title}>Mountain Tent</Text>
 
       <Text style={styles.description}>
-        Slimme ring voor gezondheid en tracking
+        Lichtgewicht 2-persoons tent, ideaal voor bergtochten en avontuurlijke trips.
       </Text>
 
       <Text style={styles.price}>€299</Text>
@@ -24,8 +24,8 @@ export default function ProductCard() {
         style={styles.button}
         onPress={() =>
           navigation.navigate("Details", {
-            title: "Smart Ring",
-            description: "Slimme ring voor gezondheid en tracking",
+            title: "Mountain Tent",
+            description: "Lichtgewicht 2-persoons tent, ideaal voor bergtochten en avontuurlijke trips.",
             price: "€299",
             image: require("../assets/tent.jpg"),
           })

@@ -2,7 +2,16 @@ import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
 const ProductDetail = ({ route }) => {
-  const { title, description, price, image } = route.params || {};
+  const { title, description, price, image } = route.params;
+
+const [quantity, setQuantity] = useState(1);
+
+const increaseQuantity =()=>setQuantity(quantity+1);
+const decreaseQuantity = () => {
+    if (quantity >1){
+        setQuantity(quantity-1);
+    }
+};
 
   return (
     <View style={styles.container}>
