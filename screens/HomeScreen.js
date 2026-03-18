@@ -28,6 +28,14 @@ const HomeScreen = () => {
           image={require("../assets/tent.jpg")}
         />
       </View>
+      <View style={styles.grid}>
+        <ProductCard
+          title="Alpine Explorer Tent"
+          description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
+          price="€349"
+          image={require("../assets/tent.avif")}
+        />
+      </View>
 
     </ScrollView>
   );
