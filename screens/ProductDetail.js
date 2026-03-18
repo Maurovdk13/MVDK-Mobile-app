@@ -24,7 +24,7 @@ const ProductDetail = ({ route }) => {
     <View style={styles.container}>
 
       {/* ✅ IMAGE FIX */}
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image source={image} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
