@@ -1,36 +1,47 @@
 import React, { useState } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
 const ProductDetail = ({ route }) => {
   const { title, description, price, image } = route.params;
 
-const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(1);
 
-const increaseQuantity =()=>setQuantity(quantity+1);
-const decreaseQuantity = () => {
-    if (quantity >1){
-        setQuantity(quantity-1);
+  const increaseQuantity = () => setQuantity(quantity + 1);
+
+  const decreaseQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
     }
-};
+  };
 
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} />
+
+      <Image source={{ uri: image }} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
       <Text style={styles.description}>{description}</Text>
 
       <Text style={styles.price}>{price}</Text>
-      <touchableOpacity onPress={decreaseQuantity} style={styles.button}>
-        <Text style={styles.buttonText}>-</Text>
-      </touchableOpacity>
+
+      <View style={styles.quantityContainer}>
+        <TouchableOpacity onPress={decreaseQuantity} style={styles.button}>
+          <Text style={styles.buttonText}>-</Text>
+        </TouchableOpacity>
 
         <Text style={styles.quantityText}>{quantity}</Text>
 
-        <touchableOpacity onPress={increaseQuantity} style={styles.button}>
+        <TouchableOpacity onPress={increaseQuantity} style={styles.button}>
           <Text style={styles.buttonText}>+</Text>
-        </touchableOpacity>
+        </TouchableOpacity>
+      </View>
 
     </View>
   );
@@ -64,6 +75,30 @@ const styles = StyleSheet.create({
   price: {
     color: "red",
     fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 20,
+  },
+
+  quantityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  button: {
+    backgroundColor: "red",
+    padding: 10,
+    borderRadius: 8,
+    marginHorizontal: 10,
+  },
+
+  buttonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  quantityText: {
+    fontSize: 18,
     fontWeight: "bold",
   },
 });
