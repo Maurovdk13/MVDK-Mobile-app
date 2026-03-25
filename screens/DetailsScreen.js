@@ -8,6 +8,15 @@ import {
   ScrollView,
 } from "react-native";
 
+const colors = {
+  pine: "#2F4A3C",
+  earth: "#807157",
+  sand: "#E8DFD1",
+  mist: "#F5F1E8",
+  bark: "#3F3328",
+  ember: "#C96B3B",
+};
+
 const DetailsScreen = ({ route }) => {
   const { title, description, price, image, type } = route.params;
 
@@ -68,7 +77,7 @@ const DetailsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: colors.mist,
   },
 
   contentContainer: {
@@ -81,12 +90,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 250,
     marginBottom: 20,
-    borderRadius: 12,
+    borderRadius: 18,
   },
 
   title: {
     fontSize: 22,
-    fontWeight: "bold",
+    fontWeight: "800",
+    color: colors.bark,
   },
 
   blogTitle: {
@@ -101,6 +111,8 @@ const styles = StyleSheet.create({
   description: {
     textAlign: "center",
     marginVertical: 10,
+    color: colors.pine,
+    lineHeight: 22,
   },
 
   blogText: {
@@ -108,11 +120,16 @@ const styles = StyleSheet.create({
     marginTop: 12,
     fontSize: 16,
     lineHeight: 24,
-    color: "#222",
+    color: colors.pine,
+    backgroundColor: colors.sand,
+    padding: 16,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#D5C7B0",
   },
 
   price: {
-    color: "red",
+    color: colors.ember,
     fontWeight: "bold",
     marginBottom: 20,
   },
@@ -124,8 +141,9 @@ const styles = StyleSheet.create({
 
   button: {
     padding: 10,
-    backgroundColor: "#ddd",
+    backgroundColor: colors.earth,
     margin: 10,
+    borderRadius: 12,
   },
 });
 

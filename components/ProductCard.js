@@ -1,6 +1,15 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 
+const colors = {
+  pine: "#2F4A3C",
+  earth: "#807157",
+  sand: "#E8DFD1",
+  mist: "#F5F1E8",
+  bark: "#3F3328",
+  ember: "#C96B3B",
+};
+
 export default function ProductCard({
   title,
   description,
@@ -27,11 +36,17 @@ export default function ProductCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#f2f2f2",
+    backgroundColor: colors.sand,
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 18,
     width: "48%",
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#D5C7B0",
+    shadowColor: "#2A211A",
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
     elevation: 5,
   },
 
@@ -45,27 +60,28 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 16,
+    color: colors.bark,
   },
 
   description: {
-    color: "gray",
+    color: colors.pine,
     marginVertical: 5,
   },
 
   price: {
-    color: "red",
+    color: colors.ember,
     fontWeight: "bold",
     marginBottom: 10,
   },
 
   button: {
-    backgroundColor: "red",
+    backgroundColor: colors.earth,
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 12,
   },
 
   buttonText: {
-    color: "white",
+    color: colors.mist,
     textAlign: "center",
     fontWeight: "bold",
   },

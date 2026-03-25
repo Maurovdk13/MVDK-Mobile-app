@@ -13,6 +13,16 @@ import {
 
 import ProductCard from "../components/ProductCard";
 
+const colors = {
+  pine: "#2F4A3C",
+  moss: "#5F6F52",
+  earth: "#807157",
+  sand: "#E8DFD1",
+  mist: "#F5F1E8",
+  bark: "#3F3328",
+  ember: "#C96B3B",
+};
+
 const fallbackBlogImages = {
   "how to start a campfire safely": require("../assets/blog1.jpg"),
 };
@@ -355,13 +365,13 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: colors.mist,
   },
 
   heading: {
-    color: "#fff",
-    fontSize: 24,
-    fontWeight: "700",
+    color: colors.bark,
+    fontSize: 28,
+    fontWeight: "800",
     textAlign: "center",
     marginTop: 60,
     marginBottom: 12,
@@ -377,9 +387,12 @@ const styles = StyleSheet.create({
 
   input: {
     margin: 12,
-    backgroundColor: "#fff",
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: colors.sand,
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#D5C7B0",
+    color: colors.bark,
   },
 
   switchRow: {
@@ -387,56 +400,69 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 12,
     alignItems: "center",
+    backgroundColor: colors.earth,
+    marginHorizontal: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 16,
   },
 
   blogSection: {
     width: "100%",
-    marginTop: 20,
+    marginTop: 24,
   },
 
   blogHeading: {
-    color: "#fff",
+    color: colors.bark,
     fontSize: 20,
-    fontWeight: "700",
-    marginBottom: 10,
+    fontWeight: "800",
+    marginBottom: 12,
   },
 
   blogCard: {
-    backgroundColor: "#111",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 12,
+    backgroundColor: colors.bark,
+    borderRadius: 22,
+    padding: 14,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: "#6A5E4C",
+    shadowColor: "#1F1914",
+    shadowOpacity: 0.18,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 6,
   },
 
   blogImage: {
     width: "100%",
-    height: 160,
-    borderRadius: 10,
-    marginBottom: 10,
+    height: 180,
+    borderRadius: 16,
+    marginBottom: 12,
   },
 
   blogTitle: {
-    color: "#fff",
+    color: colors.mist,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "800",
   },
 
   blogExcerpt: {
-    color: "#ccc",
-    marginTop: 5,
+    color: "#D8D0C4",
+    marginTop: 6,
     marginBottom: 12,
+    lineHeight: 20,
   },
 
   blogButton: {
     alignSelf: "flex-start",
-    backgroundColor: "#fff",
+    backgroundColor: colors.earth,
     borderRadius: 999,
     paddingHorizontal: 14,
     paddingVertical: 8,
   },
 
   blogButtonText: {
-    color: "#111",
+    color: colors.mist,
     fontWeight: "700",
   },
 });
