@@ -108,9 +108,7 @@ const generateBlogContent = (title, excerpt) => {
       ? excerpt
       : `${safeTitle} neemt je mee in handige tips en inspiratie voor buitenavonturen.`;
 
-  return `${safeTitle}
-
-${safeExcerpt}
+  return `${safeExcerpt}
 
 In dit artikel ontdek je stap voor stap hoe je hier zelf mee aan de slag kunt gaan. We leggen alles eenvoudig uit, zodat je snel begrijpt wat belangrijk is en waar je op moet letten.
 
@@ -175,10 +173,15 @@ const HomeScreen = ({ navigation }) => {
       .then((data) => {
         setBlogs(
           (data.items || []).map((item) => {
-            const imageUrl = getImageUrl(item.fieldData);
             const title =
               item.fieldData?.name || "Untitled blog";
             const excerpt = getBlogExcerpt(item.fieldData);
+            const normalizedTitle = title
+              .trim()
+              .toLowerCase();
+            const imageUrl = normalizedTitle.includes("campfire")
+              ? null
+              : getImageUrl(item.fieldData);
 
             return {
               id: item.id,

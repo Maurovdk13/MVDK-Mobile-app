@@ -21,7 +21,16 @@ const DetailsScreen = ({ route }) => {
     >
       <Image source={image} style={styles.image} />
 
-      <Text style={styles.title}>{title}</Text>
+      <Text
+        style={[
+          styles.title,
+          type === "blog"
+            ? styles.blogTitle
+            : styles.productTitle,
+        ]}
+      >
+        {title}
+      </Text>
 
       {type === "blog" ? (
         <Text style={styles.blogText}>{description}</Text>
@@ -78,7 +87,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: "bold",
+  },
+
+  blogTitle: {
     alignSelf: "flex-start",
+  },
+
+  productTitle: {
+    alignSelf: "center",
+    textAlign: "center",
   },
 
   description: {
