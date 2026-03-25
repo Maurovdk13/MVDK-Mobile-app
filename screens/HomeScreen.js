@@ -30,50 +30,6 @@ const getImageUrl = (fieldData = {}) => {
   return possibleImage?.url || null;
 };
 
-const getTextFromValue = (value) => {
-  if (!value) {
-    return null;
-  }
-
-  if (typeof value === "string") {
-    const trimmedValue = value.trim();
-    return trimmedValue.length > 0 ? trimmedValue : null;
-  }
-
-  if (Array.isArray(value)) {
-    const text = value
-      .map((item) => getTextFromValue(item))
-      .filter(Boolean)
-      .join("\n\n")
-      .trim();
-
-    return text.length > 0 ? text : null;
-  }
-
-  if (typeof value === "object") {
-    const richText =
-      getTextFromValue(value.text) ||
-      getTextFromValue(value.plainText) ||
-      getTextFromValue(value.html) ||
-      getTextFromValue(value.children) ||
-      getTextFromValue(value.content) ||
-      getTextFromValue(value.blocks) ||
-      getTextFromValue(value.nodes);
-
-    return richText;
-  }
-
-  return null;
-};
-
-const getBlogDescription = (fieldData = {}) =>
-  getTextFromValue(fieldData.summary) ||
-  getTextFromValue(fieldData.description) ||
-  getTextFromValue(fieldData["post-body"]) ||
-  getTextFromValue(fieldData["blog-body"]) ||
-  getTextFromValue(fieldData.body) ||
-  "Open dit artikel voor meer details.";
-
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
@@ -137,7 +93,11 @@ const HomeScreen = ({ navigation }) => {
 
               title: item.fieldData?.name || "Untitled blog",
 
-              description: getBlogDescription(item.fieldData),
+              description:
+                item.fieldData?.summary ||
+                item.fieldData?.description ||
+                item.fieldData?.["post-body"] ||
+                "Open dit artikel voor meer details.",
 
               image: imageUrl
                 ? { uri: imageUrl }
