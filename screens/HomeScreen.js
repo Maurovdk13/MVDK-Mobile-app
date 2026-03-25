@@ -14,7 +14,7 @@ const HomeScreen = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
 
-      <Text style={styles.title}>Onze modellen</Text>
+      <Text style={styles.title}>Ons aanbod</Text>
 
       <TextInput
         placeholder="Zoek producten of blogs..."
