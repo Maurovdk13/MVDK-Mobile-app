@@ -78,16 +78,32 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.grid}>
         <BlogCard
-          title="5 tips voor kamperen"
-          description="Leer hoe je beter kan kamperen."
-          image={require("../assets/blog1.jpg")}
-        />
+  title="5 tips voor kamperen"
+  description="Leer hoe je beter kan kamperen."
+  image={require("../assets/blog1.jpg")}
+  onPress={() =>
+    navigation.navigate("Details", {
+      title: "5 tips voor kamperen",
+      description: "Leer hoe je beter kan kamperen.",
+      image: require("../assets/blog1.jpg"),
+      type: "blog",
+    })
+  }
+/>
 
-        <BlogCard
-          title="Beste tenten van 2025"
-          description="Onze top keuzes."
-          image={require("../assets/blog2.jpeg")}
-        />
+<BlogCard
+  title="Beste tenten van 2025"
+  description="Onze top keuzes."
+  image={require("../assets/blog2.jpeg")}
+  onPress={() =>
+    navigation.navigate("Details", {
+      title: "Beste tenten van 2025",
+      description: "Onze top keuzes.",
+      image: require("../assets/blog2.jpeg"),
+      type: "blog",
+    })
+  }
+/>
       </View>
     </ScrollView>
   );

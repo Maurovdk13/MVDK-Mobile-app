@@ -1,22 +1,14 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
-export default function BlogCard({ title, description, image }) {
-  const navigation = useNavigation();
-
+export default function BlogCard({
+  title,
+  description,
+  image,
+  onPress,
+}) {
   return (
-    <Pressable
-      style={styles.card}
-      onPress={() =>
-        navigation.navigate("Details", {
-          title,
-          description,
-          image,
-          type: "blog",
-        })
-      }
-    >
+    <Pressable style={styles.card} onPress={onPress}>
       <Image source={image} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
