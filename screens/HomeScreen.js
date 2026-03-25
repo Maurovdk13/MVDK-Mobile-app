@@ -13,6 +13,22 @@ import BlogCard from "../components/BlogCard";
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
 
+  // 👉 BLOGS ARRAY
+  const blogs = [
+    {
+      id: 1,
+      title: "5 tips voor kamperen",
+      description: "Leer hoe je beter kan kamperen.",
+      image: require("../assets/blog1.jpg"),
+    },
+    {
+      id: 2,
+      title: "Beste tenten van 2025",
+      description: "Onze top keuzes.",
+      image: require("../assets/blog2.jpeg"),
+    },
+  ];
+
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/sites/698c7fb2a269f43d1814eb3c/products",
@@ -37,10 +53,7 @@ const HomeScreen = ({ navigation }) => {
         }));
 
         setProducts(mapped);
-      })
-      .catch((error) =>
-        console.error("Error fetching products:", error)
-      );
+      });
   }, []);
 
   return (
@@ -77,33 +90,20 @@ const HomeScreen = ({ navigation }) => {
       <Text style={styles.sectionTitle}>Blogs</Text>
 
       <View style={styles.grid}>
-        <BlogCard
-  title="5 tips voor kamperen"
-  description="Leer hoe je beter kan kamperen."
-  image={require("../assets/blog1.jpg")}
-  onPress={() =>
-    navigation.navigate("Details", {
-      title: "5 tips voor kamperen",
-      description: "Leer hoe je beter kan kamperen.",
-      image: require("../assets/blog1.jpg"),
-      type: "blog",
-    })
-  }
-/>
-
-<BlogCard
-  title="Beste tenten van 2025"
-  description="Onze top keuzes."
-  image={require("../assets/blog2.jpeg")}
-  onPress={() =>
-    navigation.navigate("Details", {
-      title: "Beste tenten van 2025",
-      description: "Onze top keuzes.",
-      image: require("../assets/blog2.jpeg"),
-      type: "blog",
-    })
-  }
-/>
+        {blogs.map((blog) => (
+          <BlogCard
+            key={blog.id}
+            title={blog.title}
+            description={blog.description}
+            image={blog.image}
+            onPress={() =>
+              navigation.navigate("Details", {
+                ...blog,
+                type: "blog",
+              })
+            }
+          />
+        ))}
       </View>
     </ScrollView>
   );
