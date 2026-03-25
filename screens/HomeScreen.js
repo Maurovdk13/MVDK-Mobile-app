@@ -12,23 +12,9 @@ import BlogCard from "../components/BlogCard";
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
+  const [blogs, setBlogs] = useState([]);
 
-  // 👉 BLOGS ARRAY
-  const blogs = [
-    {
-      id: 1,
-      title: "5 tips voor kamperen",
-      description: "Leer hoe je beter kan kamperen.",
-      image: require("../assets/blog1.jpg"),
-    },
-    {
-      id: 2,
-      title: "Beste tenten van 2025",
-      description: "Onze top keuzes.",
-      image: require("../assets/blog2.jpeg"),
-    },
-  ];
-
+  // 🔥 PRODUCT API
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/sites/698c7fb2a269f43d1814eb3c/products",
@@ -41,19 +27,64 @@ const HomeScreen = ({ navigation }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        const mapped = data.items.map((item) => ({
+        const items = data.items || [];
+
+        const mapped = items.map((item) => ({
           id: item.product.id,
           title: item.product.fieldData.name,
           description: item.product.fieldData.description,
           price:
             (item.skus[0]?.fieldData.price?.value || 0) / 100,
           image: {
-            uri: item.skus[0]?.fieldData["main-image"]?.url,
+            uri:
+              item.skus[0]?.fieldData["main-image"]?.url ||
+              "https://via.placeholder.com/150",
           },
         }));
 
         setProducts(mapped);
-      });
+      })
+      .catch((error) =>
+        console.error("Product error:", error)
+      );
+  }, []);
+
+  // 🔥 BLOG API (FIXED)
+  useEffect(() => {
+    fetch(
+      "https://api.webflow.com/v2/collections/699efbc02f270876dc903d10/items",
+      {
+        headers: {
+          Authorization:
+            "Bearer 3b13bd0f07d7e57b05ba7431be014af0763ebe90a406731a7e4b201839980a68",
+        },
+      }
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("BLOG DATA:", data); // 👈 debug
+
+        const items = data.items || [];
+
+        const mapped = items.map((item) => ({
+          id: item.id,
+          title: item.fieldData?.name || "Geen titel",
+          description:
+            item.fieldData?.description ||
+            "Geen beschrijving",
+          image: {
+            uri:
+              item.fieldData?.image?.url ||
+              item.fieldData?.["main-image"]?.url ||
+              "https://via.placeholder.com/150",
+          },
+        }));
+
+        setBlogs(mapped);
+      })
+      .catch((error) =>
+        console.error("Blog error:", error)
+      );
   }, []);
 
   return (
