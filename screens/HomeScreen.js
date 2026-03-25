@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, use } from "react";
 import {
   View,
   Text,
@@ -10,55 +10,82 @@ import {
 import ProductCard from "../components/ProductCard";
 import BlogCard from "../components/BlogCard";
 
-const HomeScreen = () => {
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
+const HomeScreen = ({ navigation }) => {
+  const [products, setProducts] = useState(false);
+  const [blogs, setBlogs] = useState([]);
 
-      <Text style={styles.title}>Ons aanbod</Text>
+  useEffect(() => {
+    fetch(
+      "https://api.webflow.com/v2/sites/698c7fb2a269f43d1814eb3c/products",
+      {
+        headers: {
+          Authorization: "Bearer 3b13bd0f07d7e57b05ba7431be014af0763ebe90a406731a7e4b201839980a68",
+        },
+      },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(
+          data.items.map((item) => ({
+            id: item.product.id,
+            title: item.product.fieldData.name,
+            subtitle: item.product.fieldData.description,
+            price: (item.skus[0]?.fieldData.price.value || 0) / 100,
+            image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
+          })),
+      );
+  })
+      .catch((error) => console.error("Error fetching products:", error));
+}, []);
 
-      <TextInput
-        placeholder="Zoek producten of blogs..."
-        style={styles.search}
+return (
+  <ScrollView contentContainerStyle={styles.container}>
+
+    <Text style={styles.title}>Ons aanbod</Text>
+
+    <TextInput
+      placeholder="Zoek producten of blogs..."
+      style={styles.search}
+    />
+
+    {/* PRODUCTEN */}
+    <Text style={styles.sectionTitle}>Producten</Text>
+
+    <View style={styles.grid}>
+      <ProductCard
+        title="Mountain Tent"
+        description="Dit comfortabele Mountain Tent is perfect voor je buitenavonturen."
+        price="€299"
+        image={require("../assets/tent.jpg")}
       />
 
-      {/* PRODUCTEN */}
-      <Text style={styles.sectionTitle}>Producten</Text>
+      <ProductCard
+        title="Alpine Explorer Tent"
+        description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
+        price="€349"
+        image={require("../assets/tent.avif")}
+      />
+    </View>
 
-      <View style={styles.grid}>
-        <ProductCard
-          title="Mountain Tent"
-          description="Dit comfortabele Mountain Tent is perfect voor je buitenavonturen."
-          price="€299"
-          image={require("../assets/tent.jpg")}
-        />
+    {/* BLOGS */}
+    <Text style={styles.sectionTitle}>Blogs</Text>
 
-        <ProductCard
-          title="Alpine Explorer Tent"
-          description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
-          price="€349"
-          image={require("../assets/tent.avif")}
-        />
-      </View>
+    <View style={styles.grid}>
+      <BlogCard
+        title="5 tips voor kamperen"
+        description="Leer hoe je beter kan kamperen."
+        image={require("../assets/blog1.jpg")}
+      />
 
-      {/* BLOGS */}
-      <Text style={styles.sectionTitle}>Blogs</Text>
+      <BlogCard
+        title="Beste tenten van 2025"
+        description="Onze top keuzes."
+        image={require("../assets/blog2.jpeg")}
+      />
+    </View>
 
-      <View style={styles.grid}>
-        <BlogCard
-          title="5 tips voor kamperen"
-          description="Leer hoe je beter kan kamperen."
-          image={require("../assets/blog1.jpg")}
-        />
-
-        <BlogCard
-          title="Beste tenten van 2025"
-          description="Onze top keuzes."
-          image={require("../assets/blog2.jpeg")}
-        />
-      </View>
-
-    </ScrollView>
-  );
+  </ScrollView>
+);
 };
 
 const styles = StyleSheet.create({
