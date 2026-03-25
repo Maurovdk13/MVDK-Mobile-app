@@ -32,6 +32,13 @@ const customBlogContent = {
     "Een ruwe bergtop bereik je niet zomaar. Het vraagt voorbereiding, discipline en vooral doorzettingskracht. De wind wordt sterker, het pad steiler en elke stap voelt zwaarder, maar juist daar wordt het verschil gemaakt.\n\nDoorzetten wanneer je benen branden. Focus houden wanneer het uitzicht nog verborgen is. Vertrouwen op je uitrusting en op jezelf. Dat is waar echte avonturiers zich onderscheiden.\n\nDe top is geen eindpunt. Het is het bewijs dat je grenzen hebt verlegd.\n\nBlijf klimmen. Blijf groeien. Ga verder. 🔥",
 };
 
+const normalizeTitle = (title = "") =>
+  title
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
 // 🔥 helper voor images
 const getImageUrl = (fieldData = {}) => {
   const possibleImage =
@@ -54,10 +61,10 @@ const getImageUrl = (fieldData = {}) => {
 };
 
 const getFallbackBlogImage = (title = "") => {
-  const normalizedTitle = title.trim().toLowerCase();
+  const normalizedTitle = normalizeTitle(title);
 
-  if (fallbackBlogImages[normalizedTitle]) {
-    return fallbackBlogImages[normalizedTitle];
+  if (fallbackBlogImages[title.trim().toLowerCase()]) {
+    return fallbackBlogImages[title.trim().toLowerCase()];
   }
 
   if (normalizedTitle.includes("campfire")) {
@@ -67,8 +74,15 @@ const getFallbackBlogImage = (title = "") => {
   return { uri: "https://via.placeholder.com/150" };
 };
 
-const getCustomBlogContent = (title = "") =>
-  customBlogContent[title.trim().toLowerCase()] || null;
+const getCustomBlogContent = (title = "") => {
+  const normalizedTitle = normalizeTitle(title);
+
+  const exactMatch = Object.entries(customBlogContent).find(
+    ([key]) => normalizeTitle(key) === normalizedTitle
+  );
+
+  return exactMatch ? exactMatch[1] : null;
+};
 
 const getTextFromValue = (value) => {
   if (!value) {
@@ -123,7 +137,7 @@ const getBlogExcerpt = (fieldData = {}, title = "") => {
     return "Klik om meer info te lezen.";
   }
 
-  if (excerpt.trim().toLowerCase() === title.trim().toLowerCase()) {
+  if (normalizeTitle(excerpt) === normalizeTitle(title)) {
     return "Klik om meer info te lezen.";
   }
 
@@ -142,7 +156,7 @@ const generateBlogContent = (title, excerpt) => {
     excerpt &&
     excerpt !== "Geen blogtekst gevonden." &&
     excerpt !== "Klik om meer info te lezen." &&
-    excerpt.trim().toLowerCase() !== safeTitle.trim().toLowerCase()
+    normalizeTitle(excerpt) !== normalizeTitle(safeTitle)
       ? excerpt
       : `${safeTitle} neemt je mee in handige tips en inspiratie voor buitenavonturen.`;
 
@@ -217,9 +231,7 @@ const HomeScreen = ({ navigation }) => {
               item.fieldData,
               title
             );
-            const normalizedTitle = title
-              .trim()
-              .toLowerCase();
+            const normalizedTitle = normalizeTitle(title);
             const imageUrl = normalizedTitle.includes("campfire")
               ? null
               : getImageUrl(item.fieldData);
