@@ -5,10 +5,10 @@ import {
   Text,
   View,
   ScrollView,
-  Switch,
   TextInput,
   Pressable,
   Image,
+  TouchableOpacity,
 } from "react-native";
 
 import ProductCard from "../components/ProductCard";
@@ -179,13 +179,33 @@ Daarna krijg je extra praktische tips, veelgemaakte fouten om te vermijden en id
 Of je nu nog maar net begint of al wat ervaring hebt: deze blog helpt je verder met duidelijke uitleg en concrete aanbevelingen.`;
 };
 
+const getBlogCategory = (title = "") => {
+  const normalizedTitle = normalizeTitle(title);
+
+  if (
+    normalizedTitle.includes("campfire") ||
+    normalizedTitle.includes("vuur")
+  ) {
+    return "fire";
+  }
+
+  if (
+    normalizedTitle.includes("backpack") ||
+    normalizedTitle.includes("tent") ||
+    normalizedTitle.includes("essentials")
+  ) {
+    return "gear";
+  }
+
+  return "camp";
+};
+
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
-  const [isEnabled, setIsEnabled] = useState(false);
-
-  const toggleSwitch = () =>
-    setIsEnabled((previousState) => !previousState);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedBlogCategory, setSelectedBlogCategory] =
+    useState("all");
 
   // 🔥 PRODUCTS
   useEffect(() => {
@@ -250,6 +270,7 @@ const HomeScreen = ({ navigation }) => {
               id: item.id,
 
               title,
+              category: getBlogCategory(title),
 
               description: excerpt,
               content: generateBlogContent(
@@ -269,59 +290,157 @@ const HomeScreen = ({ navigation }) => {
       );
   }, []);
 
+  const filteredProducts = products.filter((product) => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return true;
+    }
+
+    return (
+      product.title?.toLowerCase().includes(query) ||
+      product.subtitle?.toLowerCase().includes(query)
+    );
+  });
+
+  const filteredBlogs = blogs.filter((blog) =>
+    selectedBlogCategory === "all"
+      ? true
+      : blog.category === selectedBlogCategory
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Our offer</Text>
-
-      <TextInput
-        placeholder="Search a product..."
-        style={styles.input}
-      />
-
-      <View style={styles.switchRow}>
-        <Text style={{ color: "#fff" }}>
-          Only show promotions
-        </Text>
-
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#81b0ff" : "#f4f3f4"}
-          onValueChange={toggleSwitch}
-          value={isEnabled}
-        />
-      </View>
-
       <ScrollView
-        contentContainerStyle={styles.list}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* PRODUCTS */}
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            title={product.title}
-            description={product.subtitle}
-            price={`€${product.price}`}
-            image={product.image}
-            onPress={() =>
-              navigation.navigate("Details", {
-                title: product.title,
-                description: product.subtitle,
-                price: `€${product.price}`,
-                image: product.image,
-                type: "product",
-              })
-            }
-          />
-        ))}
+        <Text style={styles.heading}>Outdoor Essentials</Text>
+        <Text style={styles.subheading}>
+          Alles voor je volgende avontuur in de natuur.
+        </Text>
 
-        {/* BLOGS */}
+        <TextInput
+          placeholder="Zoek een product..."
+          placeholderTextColor="#8B7C68"
+          style={styles.input}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Onze producten</Text>
+          <Text style={styles.sectionCaption}>
+            Geselecteerd voor kamperen, hiking en fire nights.
+          </Text>
+        </View>
+
+        <View style={styles.list}>
+          {filteredProducts.map((product) => (
+            <ProductCard
+              key={product.id}
+              title={product.title}
+              description={product.subtitle}
+              price={`€${product.price}`}
+              image={product.image}
+              onPress={() =>
+                navigation.navigate("Details", {
+                  title: product.title,
+                  description: product.subtitle,
+                  price: `€${product.price}`,
+                  image: product.image,
+                  type: "product",
+                })
+              }
+            />
+          ))}
+        </View>
+
         <View style={styles.blogSection}>
-          <Text style={styles.blogHeading}>
-            Latest blogs
+          <Text style={styles.blogHeading}>Onze blog</Text>
+          <Text style={styles.blogCaption}>
+            Tips, guides en inspiratie voor buitenmensen.
           </Text>
 
-          {blogs.map((blog) => (
+          <View style={styles.blogTabs}>
+            <TouchableOpacity
+              style={[
+                styles.blogTab,
+                selectedBlogCategory === "all" &&
+                  styles.blogTabActive,
+              ]}
+              onPress={() => setSelectedBlogCategory("all")}
+            >
+              <Text
+                style={[
+                  styles.blogTabText,
+                  selectedBlogCategory === "all" &&
+                    styles.blogTabTextActive,
+                ]}
+              >
+                Alles
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.blogTab,
+                selectedBlogCategory === "camp" &&
+                  styles.blogTabActive,
+              ]}
+              onPress={() => setSelectedBlogCategory("camp")}
+            >
+              <Text
+                style={[
+                  styles.blogTabText,
+                  selectedBlogCategory === "camp" &&
+                    styles.blogTabTextActive,
+                ]}
+              >
+                Camp
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.blogTab,
+                selectedBlogCategory === "gear" &&
+                  styles.blogTabActive,
+              ]}
+              onPress={() => setSelectedBlogCategory("gear")}
+            >
+              <Text
+                style={[
+                  styles.blogTabText,
+                  selectedBlogCategory === "gear" &&
+                    styles.blogTabTextActive,
+                ]}
+              >
+                Gear
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.blogTab,
+                selectedBlogCategory === "fire" &&
+                  styles.blogTabActive,
+              ]}
+              onPress={() => setSelectedBlogCategory("fire")}
+            >
+              <Text
+                style={[
+                  styles.blogTabText,
+                  selectedBlogCategory === "fire" &&
+                    styles.blogTabTextActive,
+                ]}
+              >
+                Fire
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {filteredBlogs.map((blog) => (
             <Pressable
               key={blog.id}
               style={styles.blogCard}
@@ -354,6 +473,12 @@ const HomeScreen = ({ navigation }) => {
               </View>
             </Pressable>
           ))}
+
+          {filteredBlogs.length === 0 ? (
+            <Text style={styles.emptyText}>
+              Geen blogs gevonden in deze categorie.
+            </Text>
+          ) : null}
         </View>
       </ScrollView>
 
@@ -368,13 +493,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mist,
   },
 
+  scrollContent: {
+    paddingBottom: 28,
+  },
+
   heading: {
     color: colors.bark,
     fontSize: 28,
     fontWeight: "800",
     textAlign: "center",
     marginTop: 60,
-    marginBottom: 12,
+    marginBottom: 8,
+  },
+
+  subheading: {
+    color: colors.pine,
+    textAlign: "center",
+    marginBottom: 16,
+    paddingHorizontal: 28,
+    lineHeight: 22,
   },
 
   list: {
@@ -395,28 +532,73 @@ const styles = StyleSheet.create({
     color: colors.bark,
   },
 
-  switchRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  sectionHeader: {
     paddingHorizontal: 12,
-    alignItems: "center",
-    backgroundColor: colors.earth,
-    marginHorizontal: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    borderRadius: 16,
+    marginTop: 4,
+    marginBottom: 12,
+  },
+
+  sectionTitle: {
+    color: colors.bark,
+    fontSize: 24,
+    fontWeight: "800",
+  },
+
+  sectionCaption: {
+    color: colors.pine,
+    marginTop: 4,
   },
 
   blogSection: {
     width: "100%",
     marginTop: 24,
+    paddingHorizontal: 12,
   },
 
   blogHeading: {
     color: colors.bark,
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "800",
-    marginBottom: 12,
+    textAlign: "center",
+  },
+
+  blogCaption: {
+    color: colors.pine,
+    textAlign: "center",
+    marginTop: 6,
+    marginBottom: 18,
+  },
+
+  blogTabs: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 18,
+    gap: 8,
+  },
+
+  blogTab: {
+    flex: 1,
+    backgroundColor: colors.sand,
+    borderRadius: 999,
+    paddingVertical: 11,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#D5C7B0",
+  },
+
+  blogTabActive: {
+    backgroundColor: colors.bark,
+    borderColor: colors.bark,
+  },
+
+  blogTabText: {
+    color: colors.bark,
+    fontWeight: "700",
+    fontSize: 13,
+  },
+
+  blogTabTextActive: {
+    color: colors.mist,
   },
 
   blogCard: {
@@ -464,6 +646,12 @@ const styles = StyleSheet.create({
   blogButtonText: {
     color: colors.mist,
     fontWeight: "700",
+  },
+
+  emptyText: {
+    color: colors.pine,
+    textAlign: "center",
+    paddingVertical: 18,
   },
 });
 
