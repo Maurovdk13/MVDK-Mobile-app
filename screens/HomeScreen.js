@@ -1,20 +1,88 @@
-import React, { useState, useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  ScrollView,
   StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Switch,
   TextInput,
+  Pressable,
+  Image,
 } from "react-native";
 
 import ProductCard from "../components/ProductCard";
-import BlogCard from "../components/BlogCard";
+
+// 🔥 helper voor images
+const getImageUrl = (fieldData = {}) => {
+  const possibleImage =
+    fieldData["main-image"] ||
+    fieldData["thumbnail-image"] ||
+    fieldData["featured-image"] ||
+    fieldData["cover-image"] ||
+    fieldData["post-image"] ||
+    fieldData.image;
+
+  if (typeof possibleImage === "string") {
+    return possibleImage;
+  }
+
+  return possibleImage?.url || null;
+};
+
+const getTextFromValue = (value) => {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value === "string") {
+    const trimmedValue = value.trim();
+    return trimmedValue.length > 0 ? trimmedValue : null;
+  }
+
+  if (Array.isArray(value)) {
+    const text = value
+      .map((item) => getTextFromValue(item))
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+
+    return text.length > 0 ? text : null;
+  }
+
+  if (typeof value === "object") {
+    const richText =
+      getTextFromValue(value.text) ||
+      getTextFromValue(value.plainText) ||
+      getTextFromValue(value.html) ||
+      getTextFromValue(value.children) ||
+      getTextFromValue(value.content) ||
+      getTextFromValue(value.blocks) ||
+      getTextFromValue(value.nodes);
+
+    return richText;
+  }
+
+  return null;
+};
+
+const getBlogDescription = (fieldData = {}) =>
+  getTextFromValue(fieldData.summary) ||
+  getTextFromValue(fieldData.description) ||
+  getTextFromValue(fieldData["post-body"]) ||
+  getTextFromValue(fieldData["blog-body"]) ||
+  getTextFromValue(fieldData.body) ||
+  "Open dit artikel voor meer details.";
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [isEnabled, setIsEnabled] = useState(false);
 
-  // 🔥 PRODUCT API
+  const toggleSwitch = () =>
+    setIsEnabled((previousState) => !previousState);
+
+  // 🔥 PRODUCTS
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/sites/698c7fb2a269f43d1814eb3c/products",
@@ -27,30 +95,27 @@ const HomeScreen = ({ navigation }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        const items = data.items || [];
-
-        const mapped = items.map((item) => ({
-          id: item.product.id,
-          title: item.product.fieldData.name,
-          description:
-            item.product.fieldData.description || "Geen beschrijving",
-          price:
-            (item.skus[0]?.fieldData.price?.value || 0) / 100,
-          image: {
-            uri:
-              item.skus[0]?.fieldData["main-image"]?.url ||
-              "https://via.placeholder.com/150",
-          },
-        }));
-
-        setProducts(mapped);
+        setProducts(
+          (data.items || []).map((item) => ({
+            id: item.product.id,
+            title: item.product.fieldData.name,
+            subtitle: item.product.fieldData.description,
+            price:
+              (item.skus[0]?.fieldData.price?.value || 0) / 100,
+            image: {
+              uri:
+                item.skus[0]?.fieldData["main-image"]?.url ||
+                "https://via.placeholder.com/150",
+            },
+          }))
+        );
       })
       .catch((error) =>
-        console.error("Product error:", error)
+        console.error("Error fetching products:", error)
       );
   }, []);
 
-  // 🔥 BLOG API (GEFIXT)
+  // 🔥 BLOGS (GEFIXT)
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/collections/699efbc02f270876dc903d10/items",
@@ -63,123 +128,188 @@ const HomeScreen = ({ navigation }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        const items = data.items || [];
+        setBlogs(
+          (data.items || []).map((item) => {
+            const imageUrl = getImageUrl(item.fieldData);
 
-        console.log("BLOG ITEM:", items[0]?.fieldData); // 👈 debug
+            return {
+              id: item.id,
 
-        const mapped = items.map((item) => ({
-          id: item.id,
+              title: item.fieldData?.name || "Untitled blog",
 
-          title: item.fieldData?.name || "Geen titel",
+              description: getBlogDescription(item.fieldData),
 
-          description:
-            item.fieldData?.description ||
-            item.fieldData?.summary ||
-            item.fieldData?.["post-body"] ||
-            "Geen beschrijving",
-
-          image: {
-            uri:
-              item.fieldData?.["main-image"]?.url ||
-              item.fieldData?.image?.url ||
-              "https://via.placeholder.com/150",
-          },
-        }));
-
-        setBlogs(mapped);
+              image: imageUrl
+                ? { uri: imageUrl }
+                : { uri: "https://via.placeholder.com/150" },
+            };
+          })
+        );
       })
       .catch((error) =>
-        console.error("Blog error:", error)
+        console.error("Error fetching blogs:", error)
       );
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Ons aanbod</Text>
+    <View style={styles.container}>
+      <Text style={styles.heading}>Our offer</Text>
 
       <TextInput
-        placeholder="Zoek producten of blogs..."
-        style={styles.search}
+        placeholder="Search a product..."
+        style={styles.input}
       />
 
-      {/* PRODUCTEN */}
-      <Text style={styles.sectionTitle}>Producten</Text>
+      <View style={styles.switchRow}>
+        <Text style={{ color: "#fff" }}>
+          Only show promotions
+        </Text>
 
-      <View style={styles.grid}>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isEnabled ? "#81b0ff" : "#f4f3f4"}
+          onValueChange={toggleSwitch}
+          value={isEnabled}
+        />
+      </View>
+
+      <ScrollView
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* PRODUCTS */}
         {products.map((product) => (
           <ProductCard
             key={product.id}
             title={product.title}
-            description={product.description}
+            description={product.subtitle}
             price={`€${product.price}`}
             image={product.image}
             onPress={() =>
               navigation.navigate("Details", {
-                ...product,
+                title: product.title,
+                description: product.subtitle,
+                price: `€${product.price}`,
+                image: product.image,
                 type: "product",
               })
             }
           />
         ))}
-      </View>
 
-      {/* BLOGS */}
-      <Text style={styles.sectionTitle}>Blogs</Text>
+        {/* BLOGS */}
+        <View style={styles.blogSection}>
+          <Text style={styles.blogHeading}>
+            Latest blogs
+          </Text>
 
-      <View style={styles.grid}>
-        {blogs.map((blog) => (
-          <BlogCard
-            key={blog.id}
-            title={blog.title}
-            description={blog.description}
-            image={blog.image}
-            onPress={() =>
-              navigation.navigate("Details", {
-                ...blog,
-                type: "blog",
-              })
-            }
-          />
-        ))}
-      </View>
-    </ScrollView>
+          {blogs.map((blog) => (
+            <Pressable
+              key={blog.id}
+              style={styles.blogCard}
+              onPress={() =>
+                navigation.navigate("Details", {
+                  title: blog.title,
+                  description: blog.description,
+                  image: blog.image,
+                  type: "blog",
+                })
+              }
+            >
+              <Image
+                source={blog.image}
+                style={styles.blogImage}
+              />
+
+              <Text style={styles.blogTitle}>
+                {blog.title}
+              </Text>
+
+              <Text style={styles.blogExcerpt}>
+                {blog.description}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </ScrollView>
+
+      <StatusBar style="auto" />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "black",
-    padding: 20,
-    paddingBottom: 40,
+    flex: 1,
+    backgroundColor: "#000",
   },
 
-  title: {
-    color: "white",
-    fontSize: 28,
-    fontWeight: "bold",
+  heading: {
+    color: "#fff",
+    fontSize: 24,
+    fontWeight: "700",
     textAlign: "center",
-    marginBottom: 20,
+    marginTop: 60,
+    marginBottom: 12,
   },
 
-  sectionTitle: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    marginTop: 10,
-  },
-
-  search: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-  },
-
-  grid: {
+  list: {
+    paddingHorizontal: 12,
+    paddingBottom: 24,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
+  },
+
+  input: {
+    margin: 12,
+    backgroundColor: "#fff",
+    padding: 10,
+    borderRadius: 8,
+  },
+
+  switchRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    alignItems: "center",
+  },
+
+  blogSection: {
+    width: "100%",
+    marginTop: 20,
+  },
+
+  blogHeading: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 10,
+  },
+
+  blogCard: {
+    backgroundColor: "#111",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+  },
+
+  blogImage: {
+    width: "100%",
+    height: 160,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
+  blogTitle: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  blogExcerpt: {
+    color: "#ccc",
+    marginTop: 5,
   },
 });
 
