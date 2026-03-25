@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 
 const DetailsScreen = ({ route }) => {
@@ -13,12 +14,20 @@ const DetailsScreen = ({ route }) => {
   const [quantity, setQuantity] = useState(1);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <Image source={image} style={styles.image} />
 
       <Text style={styles.title}>{title}</Text>
 
-      <Text style={styles.description}>{description}</Text>
+      {type === "blog" ? (
+        <Text style={styles.blogText}>{description}</Text>
+      ) : (
+        <Text style={styles.description}>{description}</Text>
+      )}
 
       {type === "product" && (
         <>
@@ -43,31 +52,46 @@ const DetailsScreen = ({ route }) => {
           </View>
         </>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
+  },
+
+  contentContainer: {
     alignItems: "center",
     padding: 20,
+    paddingBottom: 40,
   },
 
   image: {
-    width: 250,
+    width: "100%",
     height: 250,
     marginBottom: 20,
+    borderRadius: 12,
   },
 
   title: {
     fontSize: 22,
     fontWeight: "bold",
+    alignSelf: "flex-start",
   },
 
   description: {
     textAlign: "center",
     marginVertical: 10,
+  },
+
+  blogText: {
+    width: "100%",
+    marginTop: 12,
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#222",
   },
 
   price: {

@@ -20,6 +20,10 @@ const getImageUrl = (fieldData = {}) => {
     fieldData["thumbnail-image"] ||
     fieldData["featured-image"] ||
     fieldData["cover-image"] ||
+    fieldData["hero-image"] ||
+    fieldData["blog-image"] ||
+    fieldData["post-thumbnail"] ||
+    fieldData.thumbnail ||
     fieldData["post-image"] ||
     fieldData.image;
 
@@ -29,6 +33,55 @@ const getImageUrl = (fieldData = {}) => {
 
   return possibleImage?.url || null;
 };
+
+const getTextFromValue = (value) => {
+  if (!value) {
+    return null;
+  }
+
+  if (typeof value === "string") {
+    const trimmedValue = value.trim();
+    return trimmedValue.length > 0 ? trimmedValue : null;
+  }
+
+  if (Array.isArray(value)) {
+    const text = value
+      .map((item) => getTextFromValue(item))
+      .filter(Boolean)
+      .join("\n\n")
+      .trim();
+
+    return text.length > 0 ? text : null;
+  }
+
+  if (typeof value === "object") {
+    return (
+      getTextFromValue(value.text) ||
+      getTextFromValue(value.plainText) ||
+      getTextFromValue(value.html) ||
+      getTextFromValue(value.children) ||
+      getTextFromValue(value.content) ||
+      getTextFromValue(value.blocks) ||
+      getTextFromValue(value.nodes)
+    );
+  }
+
+  return null;
+};
+
+const getBlogContent = (fieldData = {}) =>
+  getTextFromValue(fieldData["post-body"]) ||
+  getTextFromValue(fieldData["blog-body"]) ||
+  getTextFromValue(fieldData.body) ||
+  getTextFromValue(fieldData.content) ||
+  getTextFromValue(fieldData.description) ||
+  getTextFromValue(fieldData.summary) ||
+  "Geen blogtekst gevonden.";
+
+const getBlogExcerpt = (fieldData = {}) =>
+  getTextFromValue(fieldData.summary) ||
+  getTextFromValue(fieldData.description) ||
+  getBlogContent(fieldData);
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -93,11 +146,8 @@ const HomeScreen = ({ navigation }) => {
 
               title: item.fieldData?.name || "Untitled blog",
 
-              description:
-                item.fieldData?.summary ||
-                item.fieldData?.description ||
-                item.fieldData?.["post-body"] ||
-                "Open dit artikel voor meer details.",
+              description: getBlogExcerpt(item.fieldData),
+              content: getBlogContent(item.fieldData),
 
               image: imageUrl
                 ? { uri: imageUrl }
@@ -170,7 +220,7 @@ const HomeScreen = ({ navigation }) => {
               onPress={() =>
                 navigation.navigate("Details", {
                   title: blog.title,
-                  description: blog.description,
+                  description: blog.content,
                   image: blog.image,
                   type: "blog",
                 })
