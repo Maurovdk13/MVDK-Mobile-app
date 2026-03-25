@@ -13,6 +13,10 @@ import {
 
 import ProductCard from "../components/ProductCard";
 
+const fallbackBlogImages = {
+  "how to start a campfire safely": require("../assets/blog1.jpg"),
+};
+
 // 🔥 helper voor images
 const getImageUrl = (fieldData = {}) => {
   const possibleImage =
@@ -32,6 +36,20 @@ const getImageUrl = (fieldData = {}) => {
   }
 
   return possibleImage?.url || null;
+};
+
+const getFallbackBlogImage = (title = "") => {
+  const normalizedTitle = title.trim().toLowerCase();
+
+  if (fallbackBlogImages[normalizedTitle]) {
+    return fallbackBlogImages[normalizedTitle];
+  }
+
+  if (normalizedTitle.includes("campfire")) {
+    return require("../assets/blog1.jpg");
+  }
+
+  return { uri: "https://via.placeholder.com/150" };
 };
 
 const getTextFromValue = (value) => {
@@ -82,6 +100,24 @@ const getBlogExcerpt = (fieldData = {}) =>
   getTextFromValue(fieldData.summary) ||
   getTextFromValue(fieldData.description) ||
   getBlogContent(fieldData);
+
+const generateBlogContent = (title, excerpt) => {
+  const safeTitle = title || "This blog";
+  const safeExcerpt =
+    excerpt && excerpt !== "Geen blogtekst gevonden."
+      ? excerpt
+      : `${safeTitle} neemt je mee in handige tips en inspiratie voor buitenavonturen.`;
+
+  return `${safeTitle}
+
+${safeExcerpt}
+
+In dit artikel ontdek je stap voor stap hoe je hier zelf mee aan de slag kunt gaan. We leggen alles eenvoudig uit, zodat je snel begrijpt wat belangrijk is en waar je op moet letten.
+
+Daarna krijg je extra praktische tips, veelgemaakte fouten om te vermijden en ideeën om het nog beter aan te pakken. Zo heb je niet alleen inspiratie, maar ook meteen bruikbare informatie om zelf te starten.
+
+Of je nu nog maar net begint of al wat ervaring hebt: deze blog helpt je verder met duidelijke uitleg en concrete aanbevelingen.`;
+};
 
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
@@ -140,18 +176,24 @@ const HomeScreen = ({ navigation }) => {
         setBlogs(
           (data.items || []).map((item) => {
             const imageUrl = getImageUrl(item.fieldData);
+            const title =
+              item.fieldData?.name || "Untitled blog";
+            const excerpt = getBlogExcerpt(item.fieldData);
 
             return {
               id: item.id,
 
-              title: item.fieldData?.name || "Untitled blog",
+              title,
 
-              description: getBlogExcerpt(item.fieldData),
-              content: getBlogContent(item.fieldData),
+              description: excerpt,
+              content: generateBlogContent(
+                title,
+                getBlogContent(item.fieldData) || excerpt
+              ),
 
               image: imageUrl
                 ? { uri: imageUrl }
-                : { uri: "https://via.placeholder.com/150" },
+                : getFallbackBlogImage(title),
             };
           })
         );
