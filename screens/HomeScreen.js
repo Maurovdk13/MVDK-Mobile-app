@@ -23,9 +23,11 @@ const colors = {
   ember: "#C96B3B",
 };
 
-const fallbackBlogImages = {
-  "how to start a campfire safely": require("../assets/blog1.jpg"),
-};
+const productFilters = [
+  { label: "Alles", value: "all" },
+  { label: "Gear", value: "gear" },
+  { label: "Elektronische gear", value: "electronic-gear" },
+];
 
 const customBlogContent = {
   "hoe je de perfecte campingplek kiest":
@@ -73,12 +75,8 @@ const getImageUrl = (fieldData = {}) => {
 const getFallbackBlogImage = (title = "") => {
   const normalizedTitle = normalizeTitle(title);
 
-  if (fallbackBlogImages[title.trim().toLowerCase()]) {
-    return fallbackBlogImages[title.trim().toLowerCase()];
-  }
-
   if (normalizedTitle.includes("campfire")) {
-    return require("../assets/blog1.jpg");
+    return require("../assets/vuur.webp");
   }
 
   return { uri: "https://via.placeholder.com/150" };
@@ -200,10 +198,30 @@ const getBlogCategory = (title = "") => {
   return "camp";
 };
 
+const getProductCategory = (product = {}) => {
+  const title = normalizeTitle(product.title || "");
+  const subtitle = normalizeTitle(product.subtitle || "");
+  const combinedText = `${title} ${subtitle}`;
+
+  if (
+    combinedText.includes("powerbank") ||
+    combinedText.includes("lamp") ||
+    combinedText.includes("solar") ||
+    combinedText.includes("batterij") ||
+    combinedText.includes("elektr")
+  ) {
+    return "electronic-gear";
+  }
+
+  return "gear";
+};
+
 const HomeScreen = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [blogs, setBlogs] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedProductFilter, setSelectedProductFilter] =
+    useState("all");
   const [selectedBlogCategory, setSelectedBlogCategory] =
     useState("all");
 
@@ -292,15 +310,17 @@ const HomeScreen = ({ navigation }) => {
 
   const filteredProducts = products.filter((product) => {
     const query = searchQuery.trim().toLowerCase();
+    const matchesFilter =
+      selectedProductFilter === "all"
+        ? true
+        : getProductCategory(product) === selectedProductFilter;
 
-    if (!query) {
-      return true;
-    }
-
-    return (
+    const matchesSearch =
+      !query ||
       product.title?.toLowerCase().includes(query) ||
-      product.subtitle?.toLowerCase().includes(query)
-    );
+      product.subtitle?.toLowerCase().includes(query);
+
+    return matchesFilter && matchesSearch;
   });
 
   const filteredBlogs = blogs.filter((blog) =>
@@ -331,8 +351,34 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Onze producten</Text>
           <Text style={styles.sectionCaption}>
-            Geselecteerd voor kamperen, hiking en fire nights.
+            Geselecteerd voor kamperen, hiking en avonden bij het vuur.
           </Text>
+        </View>
+
+        <View style={styles.productTabs}>
+          {productFilters.map((filter) => (
+            <TouchableOpacity
+              key={filter.value}
+              style={[
+                styles.productTab,
+                selectedProductFilter === filter.value &&
+                  styles.productTabActive,
+              ]}
+              onPress={() =>
+                setSelectedProductFilter(filter.value)
+              }
+            >
+              <Text
+                style={[
+                  styles.productTabText,
+                  selectedProductFilter === filter.value &&
+                    styles.productTabTextActive,
+                ]}
+              >
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
         </View>
 
         <View style={styles.list}>
@@ -397,7 +443,7 @@ const HomeScreen = ({ navigation }) => {
                     styles.blogTabTextActive,
                 ]}
               >
-                Camp
+                Kamperen
               </Text>
             </TouchableOpacity>
 
@@ -435,7 +481,7 @@ const HomeScreen = ({ navigation }) => {
                     styles.blogTabTextActive,
                 ]}
               >
-                Fire
+                Kampvuur
               </Text>
             </TouchableOpacity>
           </View>
@@ -547,6 +593,38 @@ const styles = StyleSheet.create({
   sectionCaption: {
     color: colors.pine,
     marginTop: 4,
+  },
+
+  productTabs: {
+    flexDirection: "row",
+    gap: 8,
+    paddingHorizontal: 12,
+    marginBottom: 18,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  productTab: {
+    backgroundColor: colors.sand,
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "#D5C7B0",
+  },
+
+  productTabActive: {
+    backgroundColor: colors.earth,
+    borderColor: colors.earth,
+  },
+
+  productTabText: {
+    color: colors.bark,
+    fontWeight: "700",
+  },
+
+  productTabTextActive: {
+    color: colors.mist,
   },
 
   blogSection: {

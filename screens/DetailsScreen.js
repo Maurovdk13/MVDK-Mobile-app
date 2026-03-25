@@ -18,7 +18,8 @@ const colors = {
 };
 
 const DetailsScreen = ({ route }) => {
-  const { title, description, price, image, type } = route.params;
+  const { title, description, price, image, type } =
+    route.params;
 
   const [quantity, setQuantity] = useState(1);
 
