@@ -17,6 +17,21 @@ const fallbackBlogImages = {
   "how to start a campfire safely": require("../assets/blog1.jpg"),
 };
 
+const customBlogContent = {
+  "hoe je de perfecte campingplek kiest":
+    "De juiste campingplek kiezen maakt het verschil tussen een gewone nacht en een onvergetelijk avontuur. Een vlak stuk grond, beschutting tegen de wind en het geluid van de natuur om je heen — daar begint het echte buitenleven.\n\nHet gaat niet alleen om waar je slaapt, maar om de ervaring. De zonsopgang boven de bergen, het kampvuur dat langzaam uitdooft en de rust van de wildernis.\n\nEen goede plek geeft je ruimte om te ademen, te ontspannen en op te laden.\n\nKies slim. Geniet meer. 🌄",
+  "hoe droog te blijven bij het kamperen":
+    "Regen hoort bij het buitenleven. Donkere wolken trekken over de bergen en de eerste druppels vallen op je tentdoek. Maar met de juiste voorbereiding blijft je avontuur doorgaan.\n\nWaterdichte gear, een goed geplaatste tent en slimme bescherming maken het verschil tussen natte chaos en comfortabel kamperen.\n\nWant zelfs in de regen blijft de natuur indrukwekkend.\n\nBlijf droog. Blijf sterk. Ga verder. 🌧",
+  "5 tricks om sneller je tent op te zetten":
+    "Na een lange hike wil je geen tijd verliezen met je tent. De wind trekt aan het doek, de zon zakt langzaam achter de bergen en je weet dat elke minuut telt.\n\nMet de juiste voorbereiding en een paar simpele tricks staat je tent sneller dan je denkt. Harings eerst, stokken klaar, alles binnen handbereik.\n\nEen goed opgezet kamp betekent rust, warmte en een plek om de dag af te sluiten.\n\nZet op. Kom tot rust. Geniet van het moment. 🏕",
+  "how to start a campfire safely":
+    "Een kampvuur maken is meer dan een paar takken aansteken. Het vraagt geduld, aandacht en respect voor de natuur. Het hout knispert, de vlammen dansen en langzaam verspreidt de warmte zich door de koude avondlucht.\n\nHet vuur brengt rust na een lange dag wandelen. Het is het moment om te stoppen, adem te halen en te genieten van de stilte van de natuur.\n\nEen goed kampvuur is niet alleen warmte. Het is het hart van het avontuur.\n\nBlijf ontdekken. Blijf genieten. 🔥",
+  "10 essentials for your first camping trip":
+    "Alleen op pad gaan vraagt moed. Geen drukte, geen afleiding — alleen jij en de natuur. Elke stap door het bos, elke berg die je beklimt, brengt je dichter bij jezelf.\n\nAls solo explorer leer je vertrouwen op je eigen kracht. Je beslissingen, je voorbereiding en je doorzettingsvermogen maken het verschil.\n\nDe stilte van de natuur laat je nadenken, groeien en sterker terugkomen.\n\nSoms moet je alleen gaan... om echt ver te komen. 🌲",
+  "how to choose the perfect backpack":
+    "Een ruwe bergtop bereik je niet zomaar. Het vraagt voorbereiding, discipline en vooral doorzettingskracht. De wind wordt sterker, het pad steiler en elke stap voelt zwaarder, maar juist daar wordt het verschil gemaakt.\n\nDoorzetten wanneer je benen branden. Focus houden wanneer het uitzicht nog verborgen is. Vertrouwen op je uitrusting en op jezelf. Dat is waar echte avonturiers zich onderscheiden.\n\nDe top is geen eindpunt. Het is het bewijs dat je grenzen hebt verlegd.\n\nBlijf klimmen. Blijf groeien. Ga verder. 🔥",
+};
+
 // 🔥 helper voor images
 const getImageUrl = (fieldData = {}) => {
   const possibleImage =
@@ -51,6 +66,9 @@ const getFallbackBlogImage = (title = "") => {
 
   return { uri: "https://via.placeholder.com/150" };
 };
+
+const getCustomBlogContent = (title = "") =>
+  customBlogContent[title.trim().toLowerCase()] || null;
 
 const getTextFromValue = (value) => {
   if (!value) {
@@ -113,6 +131,12 @@ const getBlogExcerpt = (fieldData = {}, title = "") => {
 };
 
 const generateBlogContent = (title, excerpt) => {
+  const customContent = getCustomBlogContent(title);
+
+  if (customContent) {
+    return customContent;
+  }
+
   const safeTitle = title || "This blog";
   const safeExcerpt =
     excerpt &&
