@@ -96,15 +96,29 @@ const getBlogContent = (fieldData = {}) =>
   getTextFromValue(fieldData.summary) ||
   "Geen blogtekst gevonden.";
 
-const getBlogExcerpt = (fieldData = {}) =>
-  getTextFromValue(fieldData.summary) ||
-  getTextFromValue(fieldData.description) ||
-  getBlogContent(fieldData);
+const getBlogExcerpt = (fieldData = {}, title = "") => {
+  const excerpt =
+    getTextFromValue(fieldData.summary) ||
+    getTextFromValue(fieldData.description);
+
+  if (!excerpt || excerpt === "Geen blogtekst gevonden.") {
+    return "Klik om meer info te lezen.";
+  }
+
+  if (excerpt.trim().toLowerCase() === title.trim().toLowerCase()) {
+    return "Klik om meer info te lezen.";
+  }
+
+  return excerpt;
+};
 
 const generateBlogContent = (title, excerpt) => {
   const safeTitle = title || "This blog";
   const safeExcerpt =
-    excerpt && excerpt !== "Geen blogtekst gevonden."
+    excerpt &&
+    excerpt !== "Geen blogtekst gevonden." &&
+    excerpt !== "Klik om meer info te lezen." &&
+    excerpt.trim().toLowerCase() !== safeTitle.trim().toLowerCase()
       ? excerpt
       : `${safeTitle} neemt je mee in handige tips en inspiratie voor buitenavonturen.`;
 
@@ -175,7 +189,10 @@ const HomeScreen = ({ navigation }) => {
           (data.items || []).map((item) => {
             const title =
               item.fieldData?.name || "Untitled blog";
-            const excerpt = getBlogExcerpt(item.fieldData);
+            const excerpt = getBlogExcerpt(
+              item.fieldData,
+              title
+            );
             const normalizedTitle = title
               .trim()
               .toLowerCase();
@@ -283,6 +300,12 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.blogExcerpt}>
                 {blog.description}
               </Text>
+
+              <View style={styles.blogButton}>
+                <Text style={styles.blogButtonText}>
+                  Lees meer
+                </Text>
+              </View>
             </Pressable>
           ))}
         </View>
@@ -365,6 +388,20 @@ const styles = StyleSheet.create({
   blogExcerpt: {
     color: "#ccc",
     marginTop: 5,
+    marginBottom: 12,
+  },
+
+  blogButton: {
+    alignSelf: "flex-start",
+    backgroundColor: "#fff",
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+
+  blogButtonText: {
+    color: "#111",
+    fontWeight: "700",
   },
 });
 
