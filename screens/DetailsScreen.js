@@ -23,12 +23,6 @@ const DetailsScreen = ({ route }) => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const productSpecs = [
-    { label: "Gebruik", value: "Outdoor & kamperen" },
-    { label: "Comfort", value: "Licht en praktisch" },
-    { label: "Levering", value: "Op voorraad" },
-  ];
-
   return (
     <ScrollView
       style={styles.container}
@@ -37,20 +31,19 @@ const DetailsScreen = ({ route }) => {
     >
       <Image source={image} style={styles.image} />
 
-      <Text
-        style={[
-          styles.title,
-          type === "blog"
-            ? styles.blogTitle
-            : styles.productTitle,
-        ]}
-      >
-        {title}
-      </Text>
+      {type === "blog" && (
+        <Text style={styles.blogTitle}>{title}</Text>
+      )}
 
-      {type === "blog" ? (
+      {type === "product" && (
+        <Text style={styles.productTitle}>{title}</Text>
+      )}
+
+      {type === "blog" && (
         <Text style={styles.blogText}>{description}</Text>
-      ) : (
+      )}
+
+      {type === "product" && (
         <Text style={styles.description}>{description}</Text>
       )}
 
@@ -97,16 +90,26 @@ const DetailsScreen = ({ route }) => {
               Specificaties
             </Text>
 
-            {productSpecs.map((spec) => (
-              <View key={spec.label} style={styles.specRow}>
-                <Text style={styles.specLabel}>
-                  {spec.label}
-                </Text>
-                <Text style={styles.specValue}>
-                  {spec.value}
-                </Text>
-              </View>
-            ))}
+            <View style={styles.specRow}>
+              <Text style={styles.specLabel}>Gebruik</Text>
+              <Text style={styles.specValue}>
+                Outdoor & kamperen
+              </Text>
+            </View>
+
+            <View style={styles.specRow}>
+              <Text style={styles.specLabel}>Comfort</Text>
+              <Text style={styles.specValue}>
+                Licht en praktisch
+              </Text>
+            </View>
+
+            <View style={styles.specRow}>
+              <Text style={styles.specLabel}>Levering</Text>
+              <Text style={styles.specValue}>
+                Op voorraad
+              </Text>
+            </View>
           </View>
 
           <TouchableOpacity style={styles.ctaButton}>
@@ -143,17 +146,17 @@ const styles = StyleSheet.create({
     borderRadius: 18,
   },
 
-  title: {
+  blogTitle: {
     fontSize: 22,
     fontWeight: "800",
     color: colors.bark,
-  },
-
-  blogTitle: {
     alignSelf: "flex-start",
   },
 
   productTitle: {
+    fontSize: 22,
+    fontWeight: "800",
+    color: colors.bark,
     alignSelf: "center",
     textAlign: "center",
   },

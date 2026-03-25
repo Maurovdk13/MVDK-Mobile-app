@@ -42,11 +42,12 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 16,
+    marginBottom: 6,
   },
 
   description: {
     color: "gray",
-    marginVertical: 5,
+    marginBottom: 10,
   },
 
   button: {

@@ -21,13 +21,11 @@ export default function ProductCard({
     <Pressable style={styles.card} onPress={onPress}>
       <Image source={image} style={styles.image} />
 
-      <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{title}</Text>
 
-        <Text style={styles.description}>{description}</Text>
+      <Text style={styles.description}>{description}</Text>
 
-        <Text style={styles.price}>{price}</Text>
-      </View>
+      <Text style={styles.price}>{price}</Text>
 
       <View style={styles.button}>
         <Text style={styles.buttonText}>Bekijk product</Text>
@@ -42,14 +40,9 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 18,
     width: "48%",
-    minHeight: 330,
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "#D5C7B0",
-    shadowColor: "#2A211A",
-    shadowOpacity: 0.12,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
     elevation: 5,
   },
 
@@ -60,27 +53,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
-  content: {
-    flex: 1,
-  },
-
   title: {
     fontWeight: "bold",
     fontSize: 16,
     color: colors.bark,
-    minHeight: 44,
+    marginBottom: 6,
   },
 
   description: {
     color: colors.pine,
-    marginVertical: 5,
-    minHeight: 56,
+    marginBottom: 10,
   },
 
   price: {
     color: colors.ember,
     fontWeight: "bold",
-    marginTop: 4,
     marginBottom: 14,
     fontSize: 17,
   },
