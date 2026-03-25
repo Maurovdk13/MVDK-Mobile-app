@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,88 +11,93 @@ import ProductCard from "../components/ProductCard";
 import BlogCard from "../components/BlogCard";
 
 const HomeScreen = ({ navigation }) => {
-  const [products, setProducts] = useState(false);
-  const [blogs, setBlogs] = useState([]);
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/sites/698c7fb2a269f43d1814eb3c/products",
       {
         headers: {
-          Authorization: "Bearer 3b13bd0f07d7e57b05ba7431be014af0763ebe90a406731a7e4b201839980a68",
+          Authorization:
+            "Bearer 3b13bd0f07d7e57b05ba7431be014af0763ebe90a406731a7e4b201839980a68",
         },
-      },
+      }
     )
       .then((res) => res.json())
       .then((data) => {
-        setProducts(
-          data.items.map((item) => ({
-            id: item.product.id,
-            title: item.product.fieldData.name,
-            subtitle: item.product.fieldData.description,
-            price: (item.skus[0]?.fieldData.price.value || 0) / 100,
-            image: { uri: item.skus[0]?.fieldData["main-image"]?.url },
-          })),
+        const mapped = data.items.map((item) => ({
+          id: item.product.id,
+          title: item.product.fieldData.name,
+          description: item.product.fieldData.description,
+          price:
+            (item.skus[0]?.fieldData.price?.value || 0) / 100,
+          image: {
+            uri: item.skus[0]?.fieldData["main-image"]?.url,
+          },
+        }));
+
+        setProducts(mapped);
+      })
+      .catch((error) =>
+        console.error("Error fetching products:", error)
       );
-  })
-      .catch((error) => console.error("Error fetching products:", error));
-}, []);
+  }, []);
 
-return (
-  <ScrollView contentContainerStyle={styles.container}>
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Ons aanbod</Text>
 
-    <Text style={styles.title}>Ons aanbod</Text>
-
-    <TextInput
-      placeholder="Zoek producten of blogs..."
-      style={styles.search}
-    />
-
-    {/* PRODUCTEN */}
-    <Text style={styles.sectionTitle}>Producten</Text>
-
-    <View style={styles.grid}>
-      <ProductCard
-        title="Mountain Tent"
-        description="Dit comfortabele Mountain Tent is perfect voor je buitenavonturen."
-        price="€299"
-        image={require("../assets/tent.jpg")}
+      <TextInput
+        placeholder="Zoek producten of blogs..."
+        style={styles.search}
       />
 
-      <ProductCard
-        title="Alpine Explorer Tent"
-        description="Perfect voor bergbeklimmers en extreme weersomstandigheden."
-        price="€349"
-        image={require("../assets/tent.avif")}
-      />
-    </View>
+      {/* PRODUCTEN */}
+      <Text style={styles.sectionTitle}>Producten</Text>
 
-    {/* BLOGS */}
-    <Text style={styles.sectionTitle}>Blogs</Text>
+      <View style={styles.grid}>
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            title={product.title}
+            description={product.description}
+            price={`€${product.price}`}
+            image={product.image}
+            onPress={() =>
+              navigation.navigate("Details", {
+                ...product,
+                type: "product",
+              })
+            }
+          />
+        ))}
+      </View>
 
-    <View style={styles.grid}>
-      <BlogCard
-        title="5 tips voor kamperen"
-        description="Leer hoe je beter kan kamperen."
-        image={require("../assets/blog1.jpg")}
-      />
+      {/* BLOGS */}
+      <Text style={styles.sectionTitle}>Blogs</Text>
 
-      <BlogCard
-        title="Beste tenten van 2025"
-        description="Onze top keuzes."
-        image={require("../assets/blog2.jpeg")}
-      />
-    </View>
+      <View style={styles.grid}>
+        <BlogCard
+          title="5 tips voor kamperen"
+          description="Leer hoe je beter kan kamperen."
+          image={require("../assets/blog1.jpg")}
+        />
 
-  </ScrollView>
-);
+        <BlogCard
+          title="Beste tenten van 2025"
+          description="Onze top keuzes."
+          image={require("../assets/blog2.jpeg")}
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "black",
     padding: 20,
-    paddingBottom: 40, // 👈 extra ruimte onderaan
+    paddingBottom: 40,
   },
 
   title: {
