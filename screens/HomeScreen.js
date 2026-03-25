@@ -32,7 +32,8 @@ const HomeScreen = ({ navigation }) => {
         const mapped = items.map((item) => ({
           id: item.product.id,
           title: item.product.fieldData.name,
-          description: item.product.fieldData.description,
+          description:
+            item.product.fieldData.description || "Geen beschrijving",
           price:
             (item.skus[0]?.fieldData.price?.value || 0) / 100,
           image: {
@@ -49,7 +50,7 @@ const HomeScreen = ({ navigation }) => {
       );
   }, []);
 
-  // 🔥 BLOG API (FIXED)
+  // 🔥 BLOG API (GEFIXT)
   useEffect(() => {
     fetch(
       "https://api.webflow.com/v2/collections/699efbc02f270876dc903d10/items",
@@ -62,20 +63,25 @@ const HomeScreen = ({ navigation }) => {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log("BLOG DATA:", data); // 👈 debug
-
         const items = data.items || [];
+
+        console.log("BLOG ITEM:", items[0]?.fieldData); // 👈 debug
 
         const mapped = items.map((item) => ({
           id: item.id,
+
           title: item.fieldData?.name || "Geen titel",
+
           description:
             item.fieldData?.description ||
+            item.fieldData?.summary ||
+            item.fieldData?.["post-body"] ||
             "Geen beschrijving",
+
           image: {
             uri:
-              item.fieldData?.image?.url ||
               item.fieldData?.["main-image"]?.url ||
+              item.fieldData?.image?.url ||
               "https://via.placeholder.com/150",
           },
         }));
