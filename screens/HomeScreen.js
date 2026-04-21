@@ -6,12 +6,12 @@ import {
   View,
   ScrollView,
   TextInput,
-  Pressable,
-  Image,
   ImageBackground,
   TouchableOpacity,
+  Switch,
 } from "react-native";
 
+import BlogCard from "../components/BlogCard";
 import ProductCard from "../components/ProductCard";
 
 const colors = {
@@ -29,10 +29,12 @@ const HomeScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProductFilter, setSelectedProductFilter] =
     useState("all");
-  const [priceSort, setPriceSort] = useState("low-high");
+  const [sortOption, setSortOption] = useState("low-high");
   const [showCategoryOptions, setShowCategoryOptions] =
     useState(false);
   const [showPriceOptions, setShowPriceOptions] =
+    useState(false);
+  const [onlyElectronicGear, setOnlyElectronicGear] =
     useState(false);
   const [selectedBlogCategory, setSelectedBlogCategory] =
     useState("all");
@@ -240,29 +242,40 @@ const HomeScreen = ({ navigation }) => {
       product.title.toLowerCase().includes(query) ||
       product.subtitle.toLowerCase().includes(query);
 
+    if (onlyElectronicGear) {
+      return (
+        product.category === "electronic-gear" &&
+        matchesSearch
+      );
+    }
+
     if (selectedProductFilter === "all") {
       return matchesSearch;
     }
 
-    return (
-      product.category === selectedProductFilter &&
-      matchesSearch
-    );
+    return product.category === selectedProductFilter && matchesSearch;
   });
 
   filteredProducts.sort((a, b) => {
-    if (priceSort === "low-high") {
+    if (sortOption === "low-high") {
       return a.price - b.price;
     }
 
-    if (priceSort === "high-low") {
+    if (sortOption === "high-low") {
       return b.price - a.price;
+    }
+
+    if (sortOption === "name-a-z") {
+      return a.title.localeCompare(b.title);
+    }
+
+    if (sortOption === "name-z-a") {
+      return b.title.localeCompare(a.title);
     }
 
     const middlePrice = 100;
     const distanceA = Math.abs(a.price - middlePrice);
     const distanceB = Math.abs(b.price - middlePrice);
-
     return distanceA - distanceB;
   });
 
@@ -306,6 +319,18 @@ const HomeScreen = ({ navigation }) => {
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
+
+        <View style={styles.switchRow}>
+          <Text style={styles.switchText}>
+            Alleen elektronische gear
+          </Text>
+          <Switch
+            value={onlyElectronicGear}
+            onValueChange={setOnlyElectronicGear}
+            trackColor={{ false: "#CFC5B5", true: colors.earth }}
+            thumbColor="#FFFFFF"
+          />
+        </View>
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Onze producten</Text>
@@ -382,9 +407,11 @@ const HomeScreen = ({ navigation }) => {
             onPress={() => setShowPriceOptions(!showPriceOptions)}
           >
             <Text style={styles.sortButtonText}>
-              {priceSort === "low-high" && "Prijs laag-hoog"}
-              {priceSort === "high-low" && "Prijs hoog-laag"}
-              {priceSort === "middle" && "Midden prijs"}
+              {sortOption === "low-high" && "Prijs laag-hoog"}
+              {sortOption === "high-low" && "Prijs hoog-laag"}
+              {sortOption === "middle" && "Midden prijs"}
+              {sortOption === "name-a-z" && "Naam A-Z"}
+              {sortOption === "name-z-a" && "Naam Z-A"}
             </Text>
 
             <Text style={styles.sortArrow}>
@@ -397,7 +424,7 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => {
-                  setPriceSort("low-high");
+                  setSortOption("low-high");
                   setShowPriceOptions(false);
                 }}
               >
@@ -409,7 +436,7 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => {
-                  setPriceSort("high-low");
+                  setSortOption("high-low");
                   setShowPriceOptions(false);
                 }}
               >
@@ -421,13 +448,33 @@ const HomeScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.optionButton}
                 onPress={() => {
-                  setPriceSort("middle");
+                  setSortOption("middle");
                   setShowPriceOptions(false);
                 }}
               >
                 <Text style={styles.optionText}>
                   Midden prijs
                 </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setSortOption("name-a-z");
+                  setShowPriceOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>Naam A-Z</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setSortOption("name-z-a");
+                  setShowPriceOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>Naam Z-A</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -442,12 +489,11 @@ const HomeScreen = ({ navigation }) => {
               price={`€${product.price}`}
               image={product.image}
               onPress={() =>
-                navigation.navigate("Details", {
+                navigation.navigate("ProductDetails", {
                   title: product.title,
                   description: product.subtitle,
                   price: `€${product.price}`,
                   image: product.image,
-                  type: "product",
                 })
               }
             />
@@ -539,32 +585,19 @@ const HomeScreen = ({ navigation }) => {
           </View>
 
           {filteredBlogs.map((blog) => (
-            <Pressable
+            <BlogCard
               key={blog.id}
-              style={styles.blogCard}
+              title={blog.title}
+              description={blog.description}
+              image={blog.image}
               onPress={() =>
-                navigation.navigate("Details", {
+                navigation.navigate("BlogDetails", {
                   title: blog.title,
                   description: blog.content,
                   image: blog.image,
-                  type: "blog",
                 })
               }
-            >
-              <Image source={blog.image} style={styles.blogImage} />
-
-              <Text style={styles.blogTitle}>{blog.title}</Text>
-
-              <Text style={styles.blogExcerpt}>
-                {blog.description}
-              </Text>
-
-              <View style={styles.blogButton}>
-                <Text style={styles.blogButtonText}>
-                  Lees meer
-                </Text>
-              </View>
-            </Pressable>
+            />
           ))}
 
           {filteredBlogs.length === 0 && (
