@@ -8,6 +8,7 @@ import {
   TextInput,
   Pressable,
   Image,
+  ImageBackground,
   TouchableOpacity,
 } from "react-native";
 
@@ -28,6 +29,11 @@ const HomeScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProductFilter, setSelectedProductFilter] =
     useState("all");
+  const [priceSort, setPriceSort] = useState("low-high");
+  const [showCategoryOptions, setShowCategoryOptions] =
+    useState(false);
+  const [showPriceOptions, setShowPriceOptions] =
+    useState(false);
   const [selectedBlogCategory, setSelectedBlogCategory] =
     useState("all");
 
@@ -228,7 +234,7 @@ const HomeScreen = ({ navigation }) => {
       );
   }, []);
 
-  const filteredProducts = products.filter((product) => {
+  let filteredProducts = products.filter((product) => {
     const query = searchQuery.toLowerCase();
     const matchesSearch =
       product.title.toLowerCase().includes(query) ||
@@ -242,6 +248,22 @@ const HomeScreen = ({ navigation }) => {
       product.category === selectedProductFilter &&
       matchesSearch
     );
+  });
+
+  filteredProducts.sort((a, b) => {
+    if (priceSort === "low-high") {
+      return a.price - b.price;
+    }
+
+    if (priceSort === "high-low") {
+      return b.price - a.price;
+    }
+
+    const middlePrice = 100;
+    const distanceA = Math.abs(a.price - middlePrice);
+    const distanceB = Math.abs(b.price - middlePrice);
+
+    return distanceA - distanceB;
   });
 
   const filteredBlogs = blogs.filter((blog) => {
@@ -258,6 +280,20 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
+        <ImageBackground
+          source={require("../assets/hersection.jpg")}
+          style={styles.hero}
+          imageStyle={styles.heroImage}
+        >
+          <View style={styles.heroOverlay}>
+            <View style={styles.heroTextBox}>
+              <Text style={styles.heroTitle}>
+                Gear Up For Your Nextr Adventure
+              </Text>
+            </View>
+          </View>
+        </ImageBackground>
+
         <Text style={styles.heading}>Outdoor Essentials</Text>
         <Text style={styles.subheading}>
           Alles voor je volgende avontuur in de natuur.
@@ -278,65 +314,123 @@ const HomeScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        <View style={styles.productTabs}>
-          <TouchableOpacity
-            style={[
-              styles.productTab,
-              selectedProductFilter === "all" &&
-                styles.productTabActive,
-            ]}
-            onPress={() => setSelectedProductFilter("all")}
-          >
-            <Text
-              style={[
-                styles.productTabText,
-                selectedProductFilter === "all" &&
-                  styles.productTabTextActive,
-              ]}
-            >
-              Alles
-            </Text>
-          </TouchableOpacity>
+        <View style={styles.filterBox}>
+          <Text style={styles.sortLabel}>Categorie</Text>
 
           <TouchableOpacity
-            style={[
-              styles.productTab,
-              selectedProductFilter === "gear" &&
-                styles.productTabActive,
-            ]}
-            onPress={() => setSelectedProductFilter("gear")}
-          >
-            <Text
-              style={[
-                styles.productTabText,
-                selectedProductFilter === "gear" &&
-                  styles.productTabTextActive,
-              ]}
-            >
-              Gear
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.productTab,
-              selectedProductFilter === "electronic-gear" &&
-                styles.productTabActive,
-            ]}
+            style={styles.sortButton}
             onPress={() =>
-              setSelectedProductFilter("electronic-gear")
+              setShowCategoryOptions(!showCategoryOptions)
             }
           >
-            <Text
-              style={[
-                styles.productTabText,
-                selectedProductFilter === "electronic-gear" &&
-                  styles.productTabTextActive,
-              ]}
-            >
-              Elektronische gear
+            <Text style={styles.sortButtonText}>
+              {selectedProductFilter === "all" && "Alles"}
+              {selectedProductFilter === "gear" && "Gear"}
+              {selectedProductFilter === "electronic-gear" &&
+                "Elektronische gear"}
+            </Text>
+
+            <Text style={styles.sortArrow}>
+              {showCategoryOptions ? "▲" : "▼"}
             </Text>
           </TouchableOpacity>
+
+          {showCategoryOptions && (
+            <View style={styles.optionsBox}>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setSelectedProductFilter("all");
+                  setShowCategoryOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>Alles</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setSelectedProductFilter("gear");
+                  setShowCategoryOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>Gear</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setSelectedProductFilter(
+                    "electronic-gear"
+                  );
+                  setShowCategoryOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>
+                  Elektronische gear
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <Text style={styles.sortLabel}>
+            Sorteer producten
+          </Text>
+
+          <TouchableOpacity
+            style={styles.sortButton}
+            onPress={() => setShowPriceOptions(!showPriceOptions)}
+          >
+            <Text style={styles.sortButtonText}>
+              {priceSort === "low-high" && "Prijs laag-hoog"}
+              {priceSort === "high-low" && "Prijs hoog-laag"}
+              {priceSort === "middle" && "Midden prijs"}
+            </Text>
+
+            <Text style={styles.sortArrow}>
+              {showPriceOptions ? "▲" : "▼"}
+            </Text>
+          </TouchableOpacity>
+
+          {showPriceOptions && (
+            <View style={styles.optionsBox}>
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setPriceSort("low-high");
+                  setShowPriceOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>
+                  Prijs laag-hoog
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setPriceSort("high-low");
+                  setShowPriceOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>
+                  Prijs hoog-laag
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.optionButton}
+                onPress={() => {
+                  setPriceSort("middle");
+                  setShowPriceOptions(false);
+                }}
+              >
+                <Text style={styles.optionText}>
+                  Midden prijs
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
 
         <View style={styles.list}>
@@ -496,6 +590,42 @@ const styles = StyleSheet.create({
     paddingBottom: 28,
   },
 
+  hero: {
+    height: 280,
+    width: "100%",
+    marginBottom: 20,
+    justifyContent: "center",
+  },
+
+  heroImage: {
+    borderRadius: 0,
+  },
+
+  heroOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.28)",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 24,
+  },
+
+  heroTextBox: {
+    borderWidth: 3,
+    borderColor: "rgba(255, 255, 255, 0.9)",
+    paddingVertical: 24,
+    paddingHorizontal: 18,
+    width: "100%",
+  },
+
+  heroTitle: {
+    color: "#FFFFFF",
+    fontSize: 34,
+    fontWeight: "800",
+    textAlign: "center",
+    lineHeight: 42,
+    fontStyle: "italic",
+  },
+
   heading: {
     color: colors.bark,
     fontSize: 28,
@@ -540,37 +670,65 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 
-  productTabs: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 8,
-    paddingHorizontal: 12,
+  filterBox: {
+    marginHorizontal: 12,
     marginBottom: 18,
-    flexWrap: "wrap",
-  },
-
-  productTab: {
-    backgroundColor: colors.sand,
-    borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 10,
+    backgroundColor: colors.bark,
+    borderRadius: 22,
+    paddingTop: 22,
+    paddingBottom: 22,
+    paddingHorizontal: 20,
     borderWidth: 1,
-    borderColor: "#D5C7B0",
+    borderColor: "#6A5E4C",
   },
 
-  productTabActive: {
-    backgroundColor: colors.earth,
-    borderColor: colors.earth,
-  },
-
-  productTabText: {
-    color: colors.bark,
+  sortLabel: {
+    color: "#A9BCD0",
+    fontSize: 13,
     fontWeight: "700",
+    textTransform: "uppercase",
+    marginTop: 12,
+    marginBottom: 14,
   },
 
-  productTabTextActive: {
-    color: colors.mist,
+  sortButton: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 14,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  sortButtonText: {
+    color: "#1F1F1F",
+    fontSize: 16,
+  },
+
+  sortArrow: {
+    color: "#1F1F1F",
+    fontSize: 16,
+  },
+
+  optionsBox: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    marginTop: 10,
+    marginBottom: 16,
+    overflow: "hidden",
+  },
+
+  optionButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E7E1D6",
+  },
+
+  optionText: {
+    color: "#1F1F1F",
+    fontSize: 16,
   },
 
   list: {
