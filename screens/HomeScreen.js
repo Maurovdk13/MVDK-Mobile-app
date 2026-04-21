@@ -584,21 +584,23 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {filteredBlogs.map((blog) => (
-            <BlogCard
-              key={blog.id}
-              title={blog.title}
-              description={blog.description}
-              image={blog.image}
-              onPress={() =>
-                navigation.navigate("BlogDetails", {
-                  title: blog.title,
-                  description: blog.content,
-                  image: blog.image,
-                })
-              }
-            />
-          ))}
+          <View style={styles.blogList}>
+            {filteredBlogs.map((blog) => (
+              <BlogCard
+                key={blog.id}
+                title={blog.title}
+                description={blog.description}
+                image={blog.image}
+                onPress={() =>
+                  navigation.navigate("BlogDetails", {
+                    title: blog.title,
+                    description: blog.content,
+                    image: blog.image,
+                  })
+                }
+              />
+            ))}
+          </View>
 
           {filteredBlogs.length === 0 && (
             <Text style={styles.emptyText}>
@@ -790,6 +792,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 6,
     marginBottom: 18,
+  },
+
+  blogList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
   },
 
   blogTabs: {
